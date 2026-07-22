@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aero Guide 🚀 | Created by Vedansh Tiwari</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Added: Marked.js for rendering Beautiful Tables and Bullet Points -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-bg: #131b2e;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark); color: var(--text-main);
+            height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px;
+        }
+
+        .app-container {
+            width: 100%; max-width: 1100px; height: 94vh;
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            padding: 16px 24px; background: #090e1a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex;
+            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+
+        .brand-title {
+            font-size: 1.4rem; font-weight: 800; color: var(--accent-cyan);
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .founder-tag {
+            font-size: 0.85rem; color: #fbbf24; font-weight: 700;
+            background: rgba(245, 158, 11, 0.1); padding: 4px 12px;
+            border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-flex; align-items: center; gap: 6px;
+        }
+
+        .header-actions { display: flex; gap: 10px; }
+
+        .top-btn {
+            background: rgba(255, 255, 255, 0.08); border: none; color: #fff;
+            padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+            display: flex; align-items: center; gap: 6px; transition: background 0.2s;
+        }
+
+        .top-btn:hover { background: var(--accent-blue); }
+        .top-btn.reset:hover { background: #ef4444; }
+
+        .quick-chips {
+            padding: 10px 20px; display: flex; gap: 8px; overflow-x: auto;
+            background: #0d1424; border-bottom: 1px solid rgba(255, 255, 255, 0.05); scrollbar-width: none;
+        }
+        .quick-chips::-webkit-scrollbar { display: none; }
+
+        .chip {
+            background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #a5f3fc; padding: 6px 14px; border-radius: 16px; font-size: 0.8rem;
+            font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s;
+        }
+        .chip:hover { background: var(--accent-cyan); color: #000; }
+
+        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+
+        .msg-row { display: flex; gap: 12px; max-width: 85%; }
+        .msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
+
+        .avatar {
+            width: 38px; height: 38px; border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+        }
+        .user .avatar { background: var(--accent-blue); color: #fff; }
+        .ai .avatar { background: var(--accent-cyan); color: #000; }
+
+        .bubble-container { display: flex; flex-direction: column; }
+        
+        .bubble {
+            padding: 12px 16px; border-radius: 16px; font-size: 0.93rem; line-height: 1.6; word-break: break-word;
+        }
+        .user .bubble { background: var(--accent-blue); color: #ffffff; border-bottom-right-radius: 2px; }
+        .ai .bubble { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-main); border-bottom-left-radius: 2px; }
+
+        .bubble table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px; font-size: 0.85rem;}
+        .bubble th, .bubble td { border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px; text-align: left; }
+        .bubble th { background-color: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+        .bubble ul, .bubble ol { margin-left: 20px; margin-top: 5px; margin-bottom: 5px; }
+        .bubble code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: monospace;}
+
+        .timestamp { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 10px; align-items: center; }
+        .user .timestamp { justify-content: flex-end; }
+
+        .tool-btn { cursor: pointer; transition: 0.2s; }
+        .tool-btn:hover { color: var(--accent-cyan); }
+
+        .typing-indicator { display: none; color: var(--accent-cyan); font-size: 0.85rem; margin-left: 50px; margin-bottom: 10px; }
+
+        .input-bar { padding: 16px 20px; background: #090e1a; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+        .input-wrapper { display: flex; align-items: center; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 6px 12px; }
+        .input-wrapper:focus-within { border-color: var(--accent-cyan); }
+        
+        .icon-btn { background: none; border: none; color: var(--accent-cyan); font-size: 1.2rem; padding: 8px; cursor: pointer; }
+        .icon-btn.listening { color: #ef4444; }
+        
+        .input-wrapper input { width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 0.95rem; padding: 8px; }
+        .send-btn { background: var(--accent-cyan); border: none; color: #000; width: 42px; height: 42px; border-radius: 10px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .send-btn:hover { transform: scale(1.05); }
+
+        @media (max-width: 600px) { .msg-row { max-width: 95%; } }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <div>
+                <div class="brand-title"><i class="fa-solid fa-rocket"></i> Aero Guide</div>
+                <div style="margin-top:4px;">
+                    <span class="founder-tag"><i class="fa-solid fa-crown"></i> Created by Vedansh Tiwari</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="top-btn" onclick="downloadChat()"><i class="fa-solid fa-download"></i> Save Plan</button>
+                <button class="top-btn reset" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+            </div>
+        </header>
+
+        <div class="quick-chips">
+            <div class="chip" onclick="sendQuick('Mujhe 8 ghante ka solid study timetable bana kar do.')">🕒 Study Timetable</div>
+            <div class="chip" onclick="sendQuick('CUET 2026 Board + Entrance Exam Strategy')">📚 CUET Strategy</div>
+            <div class="chip" onclick="sendQuick('Merchant Navy Diploma in Nautical Science (DNS) detail me batao.')">⚓ Merchant Navy (DNS)</div>
+            <div class="chip" onclick="sendQuick('Self-Discipline aur Time Table kaise set karein?')">🔥 Self-Discipline</div>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+            <div class="msg-row ai">
+                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble-container">
+                    <div class="bubble">
+                        <strong>Jai Hind! 🚀 Main Aero Guide hoon!</strong><br><br>
+                        Mera system <strong>Vedansh Tiwari</strong> dwara architect kiya gaya hai. Main aapki stream, target exams (CUET, DNS, IPMAT) aur strict daily self-discipline strategy planning me 100% help karunga.<br><br>
+                        Naye <strong>Save Plan</strong> aur <strong>Smart Tables</strong> feature ke sath, poocho apna sawaal!
+                    </div>
+                    <div class="timestamp">
+                        <span id="initial-time"></span>
+                        <span class="tool-btn" onclick="copyText(this)"><i class="fa-regular fa-copy"></i> Copy</span>
+                        <span class="tool-btn" onclick="speakText(this)"><i class="fa-solid fa-volume-high"></i> Listen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <i class="fa-solid fa-spinner fa-spin"></i> Aero Guide is planning...
+        </div>
+
+        <div class="input-bar">
+            <div class="input-wrapper">
+                <button class="icon-btn" id="micBtn" onclick="startVoice()"><i class="fa-solid fa-microphone"></i></button>
+                <input type="text" id="userInput" placeholder="Ask Aero Guide about timetable, career, discipline..." onkeydown="handleEnter(event)">
+                <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('initial-time').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const micBtn = document.getElementById('micBtn');
+
+        let chatHistoryForDownload = "Aero Guide - Career & Discipline Strategy\nCreated by: Vedansh Tiwari\n==========================================\n\n";
+
+        function appendMsg(sender, text) {
+            const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            let logPrefix = sender === 'user' ? "You: " : "Aero Guide: ";
+            chatHistoryForDownload += logPrefix + text + "\n\n";
+
+            const row = document.createElement('div');
+            row.classList.add('msg-row', sender);
+
+            const avatar = document.createElement('div');
+            avatar.classList.add('avatar');
+            avatar.innerHTML = sender === 'user' ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-robot"></i>';
+
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('bubble-container');
+            
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+
+            if (sender === 'ai') {
+                bubble.innerHTML = marked.parse(text); 
+            } else {
+                bubble.innerText = text; 
+            }
+
+            const tools = document.createElement('div');
+            tools.classList.add('timestamp');
+            
+            if (sender === 'ai') {
+                tools.innerHTML = `
+                    <span>${timeStr}</span>
+                    <span class="tool-btn" onclick="copyText(this)"><i class="fa-regular fa-copy"></i> Copy</span>
+                    <span class="tool-btn" onclick="speakText(this)"><i class="fa-solid fa-volume-high"></i> Listen</span>
+                `;
+            } else {
+                tools.innerHTML = `<span>${timeStr}</span> <i class="fa-solid fa-check-double" style="color:var(--accent-cyan);"></i>`;
+            }
+
+            wrapper.appendChild(bubble);
+            wrapper.appendChild(tools);
+            row.appendChild(avatar);
+            row.appendChild(wrapper);
+            chatBox.appendChild(row);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const msg = userInput.value.trim();
+            if (!msg) return;
+
+            appendMsg('user', msg);
+            userInput.value = '';
+            typingIndicator.style.display = 'block';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+
+                const data = await res.json();
+                typingIndicator.style.display = 'none';
+
+                if (data.reply) {
+                    appendMsg('ai', data.reply);
+                } else {
+                    appendMsg('ai', 'Error receiving response.');
+                }
+            } catch (err) {
+                typingIndicator.style.display = 'none';
+                appendMsg('ai', 'Server Connection Error!');
+            }
+        }
+
+        function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+        function sendQuick(text) { userInput.value = text; sendMessage(); }
+
+        function copyText(el) {
+            const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
+            navigator.clipboard.writeText(text);
+            el.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            setTimeout(() => el.innerHTML = '<i class="fa-regular fa-copy"></i> Copy', 2000);
+        }
+
+        function speakText(el) {
+            const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'hi-IN';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        async function clearChat() {
+            chatHistoryForDownload = "Aero Guide - Career & Discipline Strategy\nCreated by: Vedansh Tiwari\n==========================================\n\n";
+            chatBox.innerHTML = `
+                <div class="msg-row ai">
+                    <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="bubble-container">
+                        <div class="bubble">Chat reset ho chuka hai! Main <strong>Aero Guide 🚀</strong> (Created by <strong>Vedansh Tiwari</strong>). Aage batao kya help chahiye?</div>
+                        <div class="timestamp">Just now</div>
+                    </div>
+                </div>
+            `;
+            try {
+                await fetch('/reset', { method: 'POST' });
+            } catch (err) {
+                console.log("Memory reset fail", err);
+            }
+        }
+
+        function downloadChat() {
+            const blob = new Blob([chatHistoryForDownload], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Aero_Guide_Strategy.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function startVoice() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const rec = new SpeechRecognition();
+                rec.lang = 'hi-IN';
+
+                rec.onstart = () => { micBtn.classList.add('listening'); };
+                rec.onresult = (e) => {
+                    userInput.value = e.results[0][0].transcript;
+                    micBtn.classList.remove('listening');
+                    sendMessage();
+                };
+                rec.onerror = () => micBtn.classList.remove('listening');
+                rec.onend = () => micBtn.classList.remove('listening');
+                rec.start();
+            } else {
+                alert("Voice command Chrome browser me support karta hai!");
+            }
+        }
+    </script>
+</body>
+</html>

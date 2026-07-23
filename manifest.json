@@ -1,0 +1,17 @@
+{
+  "background_color": "#0f172a",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Aero Guide",
+  "orientation": "portrait",
+  "scope": "/com.aeroguide.app",
+  "short_name": "aeroguide",
+  "start_url": "https://aeroguide-vedansh.onrender.com",
+  "theme_color": "#4f46e5",
+  "id": "com.aeroguide.app",
+  "description": "a professional AI career mentor",
+  "lang": "en",
+  "categories": [
+    "education"
+  ]
+}

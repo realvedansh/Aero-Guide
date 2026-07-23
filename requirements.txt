@@ -1,4 +1,4 @@
 flask
 groq
-httpx
-gunicorn
+duckduckgo_search
+python-dotenv

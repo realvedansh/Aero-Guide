@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "default_fallback_secret")
 
 # 🔑 Groq API Key loaded securely from .env
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+GROQ_API_KEY = os.environ.get("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")
 client = Groq(api_key=GROQ_API_KEY)
 
 # --- SQLite Database Setup ---

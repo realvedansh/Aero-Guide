@@ -2,4 +2,3 @@ flask
 groq
 httpx
 gunicorn
-duckduckgo_search==6.1.0

@@ -2,3 +2,4 @@ flask
 groq
 duckduckgo_search
 python-dotenv
+gunicorn

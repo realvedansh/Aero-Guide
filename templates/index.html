@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Added: Marked.js for rendering Beautiful Tables and Bullet Points -->
+    <!-- Marked.js for rendering Tables and Bullet Points -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
@@ -25,13 +25,80 @@
         body {
             background-color: var(--bg-dark); color: var(--text-main);
             height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px;
+            overflow: hidden;
         }
 
+        /* =========================================
+           1. SPLASH SCREEN (BOOM ANIMATION)
+           ========================================= */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center;
+            z-index: 9999; animation: hideSplash 0.5s ease-out 2.5s forwards;
+        }
+        @keyframes hideSplash {
+            0% { opacity: 1; visibility: visible; pointer-events: auto; }
+            99% { opacity: 0; visibility: visible; pointer-events: auto; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; display: none !important; }
+        }
+        .loader-content { display: flex; flex-direction: column; align-items: center; }
+        .rocket-loader { width: 110px; height: 110px; border: 3px dashed rgba(6, 182, 212, 0.3); border-radius: 50%; position: relative; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; }
+        .rocket-wrapper { position: absolute; width: 100%; height: 100%; animation: orbit 2s linear infinite; }
+        .rocket-icon { font-size: 2rem; color: var(--accent-cyan); position: absolute; top: -16px; left: 50%; margin-left: -14px; transform: rotate(45deg); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        @keyframes orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .splash-title { font-size: 3rem; color: #ffffff; margin: 0; font-weight: 800; transform: scale(0); opacity: 0; animation: boomText 0.9s forwards; }
+        @keyframes boomText { 0% { transform: scale(0); opacity: 0; } 40% { transform: scale(1.3); opacity: 1; color: #ffffff; text-shadow: 0 0 30px var(--accent-cyan); } 70% { transform: scale(0.9); color: var(--accent-cyan); } 100% { transform: scale(1); opacity: 1; color: var(--accent-cyan); } }
+        .splash-subtitle { font-size: 1rem; color: #fbbf24; margin-top: 8px; font-weight: 700; opacity: 0; animation: fadeInSubtitle 0.6s ease forwards 0.8s; }
+        @keyframes fadeInSubtitle { to { opacity: 1; } }
+
+        /* =========================================
+           2. SIDEBAR DRAWER (GEMINI STYLE)
+           ========================================= */
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .sidebar-overlay.active { display: block; }
+        .sidebar-drawer {
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100vh;
+            background: #090e1a; border-right: 1px solid rgba(255,255,255,0.1);
+            z-index: 1001; transition: left 0.3s ease; display: flex; flex-direction: column;
+        }
+        .sidebar-drawer.active { left: 0; }
+        .sidebar-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-body { flex: 1; padding: 20px; overflow-y: auto; }
+        .new-chat-btn { width: 100%; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; transition: 0.2s; }
+        .new-chat-btn:hover { background: rgba(255,255,255,0.1); }
+        .sidebar-section-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 700; }
+        .recent-item { padding: 10px 12px; color: var(--text-main); font-size: 0.88rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; transition: 0.2s; }
+        .recent-item:hover { background: rgba(255,255,255,0.05); color: var(--accent-cyan); }
+        .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 12px; background: #060a14; }
+        .user-avatar-small { width: 36px; height: 36px; background: var(--accent-blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 0.9rem; }
+        .user-info-text { display: flex; flex-direction: column; }
+        .user-name { font-size: 0.88rem; font-weight: 700; color: #fff; }
+        .user-badge { font-size: 0.7rem; color: #fbbf24; font-weight: 800; letter-spacing: 0.5px; }
+
+        /* =========================================
+           3. OPTIONS DROPDOWN MENU
+           ========================================= */
+        .header-actions { position: relative; display: flex; gap: 10px; align-items: center; }
+        .options-dropdown {
+            position: absolute; top: 45px; right: 0; background: #131b2e;
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+            width: 170px; display: none; flex-direction: column; overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100;
+        }
+        .options-dropdown.show { display: flex; }
+        .dropdown-item { padding: 10px 14px; color: var(--text-main); font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .dropdown-item:hover { background: rgba(255,255,255,0.08); color: var(--accent-cyan); }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger:hover { background: rgba(239,68,68,0.15); }
+
+        /* =========================================
+           4. MAIN APP CONTAINER (YOUR ORIGINAL LAYOUT)
+           ========================================= */
         .app-container {
             width: 100%; max-width: 1100px; height: 94vh;
             background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); position: relative;
         }
 
         .header {
@@ -39,6 +106,10 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex;
             justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
+
+        .brand-title-wrapper { display: flex; align-items: center; gap: 12px; }
+        .menu-trigger-btn { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; padding: 4px; }
+        .menu-trigger-btn:hover { color: var(--accent-cyan); }
 
         .brand-title {
             font-size: 1.4rem; font-weight: 800; color: var(--accent-cyan);
@@ -50,8 +121,6 @@
             background: rgba(245, 158, 11, 0.1); padding: 4px 12px;
             border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-flex; align-items: center; gap: 6px;
         }
-
-        .header-actions { display: flex; gap: 10px; }
 
         .top-btn {
             background: rgba(255, 255, 255, 0.08); border: none; color: #fff;
@@ -125,17 +194,63 @@
 </head>
 <body>
 
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <div class="loader-content">
+            <div class="rocket-loader"><div class="rocket-wrapper"><i class="fa-solid fa-rocket rocket-icon"></i></div></div>
+            <h1 class="splash-title">Aero Guide</h1>
+            <p class="splash-subtitle"><i class="fa-solid fa-crown"></i> Created by Vedansh Tiwari</p>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay & Drawer -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+    <div id="sidebarDrawer" class="sidebar-drawer">
+        <div class="sidebar-header">
+            <div class="brand-title"><i class="fa-solid fa-rocket"></i> Aero Guide</div>
+            <button class="menu-trigger-btn" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-body">
+            <button class="new-chat-btn" onclick="clearChat(); toggleSidebar(false);"><i class="fa-solid fa-plus"></i> New Chat</button>
+            <div class="sidebar-section-title">Recent Chats</div>
+            <div class="recent-item"><i class="fa-regular fa-message"></i> Target IMU-CET DNS</div>
+            <div class="recent-item"><i class="fa-regular fa-message"></i> Class 12 Boards Prep</div>
+            <div class="recent-item"><i class="fa-regular fa-message"></i> CUET 2026 Strategy</div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-avatar-small">VT</div>
+            <div class="user-info-text">
+                <div class="user-name">Vedansh Tiwari</div>
+                <div class="user-badge">PRO</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
     <div class="app-container">
         <header class="header">
-            <div>
-                <div class="brand-title"><i class="fa-solid fa-rocket"></i> Aero Guide</div>
-                <div style="margin-top:4px;">
-                    <span class="founder-tag"><i class="fa-solid fa-crown"></i> Created by Vedansh Tiwari</span>
+            <div class="brand-title-wrapper">
+                <button class="menu-trigger-btn" onclick="toggleSidebar(true)" title="Menu"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    <div class="brand-title"><i class="fa-solid fa-rocket"></i> Aero Guide</div>
+                    <div style="margin-top:4px;">
+                        <span class="founder-tag"><i class="fa-solid fa-crown"></i> Created by Vedansh Tiwari</span>
+                    </div>
                 </div>
             </div>
+            
             <div class="header-actions">
                 <button class="top-btn" onclick="downloadChat()"><i class="fa-solid fa-download"></i> Save Plan</button>
                 <button class="top-btn reset" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                <button class="top-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                
+                <!-- Options Dropdown -->
+                <div id="optionsDropdown" class="options-dropdown">
+                    <div class="dropdown-item" onclick="downloadChat(); toggleDropdown();"><i class="fa-solid fa-share-nodes"></i> Share / Save</div>
+                    <div class="dropdown-item" onclick="alert('Chat Pinned!'); toggleDropdown();"><i class="fa-solid fa-thumbtack"></i> Pin Chat</div>
+                    <div class="dropdown-item" onclick="clearChat(); toggleDropdown();"><i class="fa-solid fa-rotate-right"></i> Reset Chat</div>
+                    <div class="dropdown-item danger" onclick="clearChat(); toggleDropdown();"><i class="fa-solid fa-trash"></i> Delete Chat</div>
+                </div>
             </div>
         </header>
 
@@ -178,6 +293,39 @@
     </div>
 
     <script>
+        // Auto remove Splash Screen from DOM after 2.6 seconds
+        setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
+            if (splash) splash.style.display = 'none';
+        }, 2600);
+
+        // Sidebar & Dropdown Controllers
+        function toggleSidebar(show) {
+            const drawer = document.getElementById('sidebarDrawer');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (show) {
+                drawer.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                drawer.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function toggleDropdown(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('optionsDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        window.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('optionsDropdown');
+            if (dropdown && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Set Initial Time
         document.getElementById('initial-time').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
         const chatBox = document.getElementById('chatBox');
@@ -206,15 +354,9 @@
             const bubble = document.createElement('div');
             bubble.classList.add('bubble');
 
-            if (sender === 'ai') {
-                bubble.innerHTML = marked.parse(text); 
-            } else {
-                bubble.innerText = text; 
-            }
-
             const tools = document.createElement('div');
             tools.classList.add('timestamp');
-            
+
             if (sender === 'ai') {
                 tools.innerHTML = `
                     <span>${timeStr}</span>
@@ -230,7 +372,29 @@
             row.appendChild(avatar);
             row.appendChild(wrapper);
             chatBox.appendChild(row);
-            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (sender === 'ai') {
+                // Typewriter effect for AI messages
+                let idx = 0;
+                function type() {
+                    if (idx < text.length) {
+                        bubble.innerText += text.charAt(idx);
+                        idx++;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        setTimeout(type, 12);
+                    } else {
+                        // After typing finishes, render markdown tables / formatting
+                        if (typeof marked !== 'undefined') {
+                            bubble.innerHTML = marked.parse(text);
+                        }
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                }
+                type();
+            } else {
+                bubble.innerText = text;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
         }
 
         async function sendMessage() {
@@ -242,8 +406,11 @@
             typingIndicator.style.display = 'block';
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            // Smart URL detection for local or live server
+            const askUrl = window.location.protocol === 'file:' ? 'https://aeroguide-vedansh.onrender.com/ask' : '/ask';
+
             try {
-                const res = await fetch('/ask', {
+                const res = await fetch(askUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: msg })
@@ -293,7 +460,8 @@
                 </div>
             `;
             try {
-                await fetch('/reset', { method: 'POST' });
+                const resetUrl = window.location.protocol === 'file:' ? 'https://aeroguide-vedansh.onrender.com/reset' : '/reset';
+                await fetch(resetUrl, { method: 'POST' });
             } catch (err) {
                 console.log("Memory reset fail", err);
             }
@@ -328,6 +496,21 @@
                 alert("Voice command Chrome browser me support karta hai!");
             }
         }
+
+        // Auto Scroll Observer
+        document.addEventListener("DOMContentLoaded", function () {
+            function autoScroll() {
+                if (chatBox) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }
+            const observer = new MutationObserver(function () {
+                autoScroll();
+            });
+            if (chatBox) {
+                observer.observe(chatBox, { childList: true, subtree: true });
+            }
+        });
     </script>
 </body>
 </html>

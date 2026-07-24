@@ -7,8 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Marked.js for rendering Tables and Bullet Points -->
+    <!-- Marked.js & html2pdf.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
     <style>
         :root {
@@ -28,13 +33,48 @@
             overflow: hidden;
         }
 
-        /* =========================================
-           1. SPLASH SCREEN (BOOM ANIMATION)
-           ========================================= */
+        /* 1. LOGIN / GUEST SCREEN */
+        #loginScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center;
+            z-index: 10000; transition: opacity 0.4s ease;
+        }
+        .login-card {
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.12);
+            padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; text-align: center;
+            max-height: 95vh; overflow-y: auto;
+        }
+        .login-logo { font-size: 2.2rem; color: var(--accent-cyan); margin-bottom: 8px; }
+        .login-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .login-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+
+        .auth-btn {
+            width: 100%; padding: 11px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05); color: #fff; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-bottom: 10px; transition: 0.2s;
+        }
+        .auth-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent-cyan); }
+        .auth-btn.google { background: #fff; color: #000; border: none; }
+        .auth-btn.google:hover { background: #f1f5f9; }
+        .auth-btn.guest-mode { background: rgba(6, 182, 212, 0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .auth-btn.guest-mode:hover { background: var(--accent-cyan); color: #000; }
+
+        .auth-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; position: relative; }
+        .auth-divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--card-bg); padding: 0 10px; font-size: 0.7rem; color: var(--text-muted); }
+
+        .login-input {
+            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; margin-bottom: 10px;
+        }
+        .login-input:focus { border-color: var(--accent-cyan); }
+
+        /* 2. SPLASH SCREEN */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center;
-            z-index: 9999; animation: hideSplash 0.5s ease-out 2.5s forwards;
+            z-index: 9999; animation: hideSplash 0.5s ease-out 2.5s forwards; display: none;
         }
         @keyframes hideSplash {
             0% { opacity: 1; visibility: visible; pointer-events: auto; }
@@ -42,7 +82,7 @@
             100% { opacity: 0; visibility: hidden; pointer-events: none; display: none !important; }
         }
         .loader-content { display: flex; flex-direction: column; align-items: center; }
-        .rocket-loader { width: 110px; height: 110px; border: 3px dashed rgba(6, 182, 212, 0.3); border-radius: 50%; position: relative; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; }
+        .rocket-loader { width: 110px; height: 110px; border: 3px dashed var(--accent-cyan); border-radius: 50%; position: relative; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; }
         .rocket-wrapper { position: absolute; width: 100%; height: 100%; animation: orbit 2s linear infinite; }
         .rocket-icon { font-size: 2rem; color: var(--accent-cyan); position: absolute; top: -16px; left: 50%; margin-left: -14px; transform: rotate(45deg); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         @keyframes orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -51,9 +91,7 @@
         .splash-subtitle { font-size: 1rem; color: #fbbf24; margin-top: 8px; font-weight: 700; opacity: 0; animation: fadeInSubtitle 0.6s ease forwards 0.8s; }
         @keyframes fadeInSubtitle { to { opacity: 1; } }
 
-        /* =========================================
-           2. SIDEBAR DRAWER (GEMINI STYLE)
-           ========================================= */
+        /* 3. SIDEBAR & APP STYLES */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1000; }
         .sidebar-overlay.active { display: block; }
         .sidebar-drawer {
@@ -65,24 +103,23 @@
         .sidebar-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .sidebar-body { flex: 1; padding: 20px; overflow-y: auto; }
         .new-chat-btn { width: 100%; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; transition: 0.2s; }
-        .new-chat-btn:hover { background: rgba(255,255,255,0.1); }
+        .new-chat-btn:hover { background: rgba(255,255,255,0.1); color: var(--accent-cyan); }
         .sidebar-section-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 700; }
-        .recent-item { padding: 10px 12px; color: var(--text-main); font-size: 0.88rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; transition: 0.2s; }
-        .recent-item:hover { background: rgba(255,255,255,0.05); color: var(--accent-cyan); }
-        .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 12px; background: #060a14; }
+        .recent-item { padding: 10px 12px; color: var(--text-main); font-size: 0.88rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; transition: 0.2s; }
+        .recent-item:hover, .recent-item.active { background: rgba(255,255,255,0.08); color: var(--accent-cyan); }
+        .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; background: #060a14; }
+        .user-profile-info { display: flex; align-items: center; gap: 10px; }
         .user-avatar-small { width: 36px; height: 36px; background: var(--accent-blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 0.9rem; }
         .user-info-text { display: flex; flex-direction: column; }
-        .user-name { font-size: 0.88rem; font-weight: 700; color: #fff; }
-        .user-badge { font-size: 0.7rem; color: #fbbf24; font-weight: 800; letter-spacing: 0.5px; }
+        .user-name { font-size: 0.85rem; font-weight: 700; color: #fff; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-badge { font-size: 0.68rem; color: #fbbf24; font-weight: 800; letter-spacing: 0.5px; }
+        .logout-btn { background: none; border: none; color: #ef4444; font-size: 1rem; cursor: pointer; padding: 6px; }
 
-        /* =========================================
-           3. OPTIONS DROPDOWN MENU
-           ========================================= */
-        .header-actions { position: relative; display: flex; gap: 10px; align-items: center; }
+        .header-actions { position: relative; display: flex; gap: 8px; align-items: center; }
         .options-dropdown {
             position: absolute; top: 45px; right: 0; background: #131b2e;
             border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
-            width: 170px; display: none; flex-direction: column; overflow: hidden;
+            width: 200px; display: none; flex-direction: column; overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100;
         }
         .options-dropdown.show { display: flex; }
@@ -90,19 +127,25 @@
         .dropdown-item:hover { background: rgba(255,255,255,0.08); color: var(--accent-cyan); }
         .dropdown-item.danger { color: #ef4444; }
         .dropdown-item.danger:hover { background: rgba(239,68,68,0.15); }
+        
+        .theme-selector-box { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+        .color-dots { display: flex; gap: 8px; }
+        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; border: 2px solid transparent; }
+        .color-dot:hover { transform: scale(1.2); }
+        .dot-cyan { background: #06b6d4; }
+        .dot-emerald { background: #10b981; }
+        .dot-purple { background: #a855f7; }
+        .dot-orange { background: #f97316; }
 
-        /* =========================================
-           4. MAIN APP CONTAINER (YOUR ORIGINAL LAYOUT)
-           ========================================= */
         .app-container {
             width: 100%; max-width: 1100px; height: 94vh;
             background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); position: relative; display: none;
         }
 
         .header {
-            padding: 16px 24px; background: #090e1a;
+            padding: 14px 20px; background: #090e1a;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex;
             justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
@@ -110,33 +153,35 @@
         .brand-title-wrapper { display: flex; align-items: center; gap: 12px; }
         .menu-trigger-btn { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; padding: 4px; }
         .menu-trigger-btn:hover { color: var(--accent-cyan); }
+        .brand-title { font-size: 1.3rem; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 8px; }
 
-        .brand-title {
-            font-size: 1.4rem; font-weight: 800; color: var(--accent-cyan);
-            display: flex; align-items: center; gap: 10px;
-        }
-
-        .founder-tag {
-            font-size: 0.85rem; color: #fbbf24; font-weight: 700;
-            background: rgba(245, 158, 11, 0.1); padding: 4px 12px;
-            border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-flex; align-items: center; gap: 6px;
-        }
+        .tag-group { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+        .founder-tag { font-size: 0.78rem; color: #fbbf24; font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-flex; align-items: center; gap: 5px; }
+        .streak-tag { font-size: 0.78rem; color: #f97316; font-weight: 800; background: rgba(249, 115, 22, 0.1); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(249, 115, 22, 0.3); display: inline-flex; align-items: center; gap: 5px; }
 
         .top-btn {
             background: rgba(255, 255, 255, 0.08); border: none; color: #fff;
-            padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+            padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
             display: flex; align-items: center; gap: 6px; transition: background 0.2s;
         }
-
         .top-btn:hover { background: var(--accent-blue); }
         .top-btn.reset:hover { background: #ef4444; }
+
+        .pomodoro-bar {
+            background: #060a14; padding: 8px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: none; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;
+        }
+        .pomodoro-bar.active { display: flex; }
+        .pomo-time { color: var(--accent-cyan); font-size: 1.1rem; font-family: monospace; }
+        .pomo-btns { display: flex; gap: 6px; }
+        .pomo-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+        .pomo-btn:hover { background: var(--accent-cyan); color: #000; }
 
         .quick-chips {
             padding: 10px 20px; display: flex; gap: 8px; overflow-x: auto;
             background: #0d1424; border-bottom: 1px solid rgba(255, 255, 255, 0.05); scrollbar-width: none;
         }
         .quick-chips::-webkit-scrollbar { display: none; }
-
         .chip {
             background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3);
             color: #a5f3fc; padding: 6px 14px; border-radius: 16px; font-size: 0.8rem;
@@ -145,54 +190,86 @@
         .chip:hover { background: var(--accent-cyan); color: #000; }
 
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-
         .msg-row { display: flex; gap: 12px; max-width: 85%; }
         .msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
-
         .avatar {
             width: 38px; height: 38px; border-radius: 12px; display: flex;
             align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
         }
         .user .avatar { background: var(--accent-blue); color: #fff; }
         .ai .avatar { background: var(--accent-cyan); color: #000; }
-
         .bubble-container { display: flex; flex-direction: column; }
-        
         .bubble {
             padding: 12px 16px; border-radius: 16px; font-size: 0.93rem; line-height: 1.6; word-break: break-word;
         }
         .user .bubble { background: var(--accent-blue); color: #ffffff; border-bottom-right-radius: 2px; }
         .ai .bubble { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-main); border-bottom-left-radius: 2px; }
-
         .bubble table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px; font-size: 0.85rem;}
         .bubble th, .bubble td { border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px; text-align: left; }
         .bubble th { background-color: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
         .bubble ul, .bubble ol { margin-left: 20px; margin-top: 5px; margin-bottom: 5px; }
         .bubble code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: monospace;}
-
         .timestamp { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 10px; align-items: center; }
         .user .timestamp { justify-content: flex-end; }
-
         .tool-btn { cursor: pointer; transition: 0.2s; }
         .tool-btn:hover { color: var(--accent-cyan); }
-
         .typing-indicator { display: none; color: var(--accent-cyan); font-size: 0.85rem; margin-left: 50px; margin-bottom: 10px; }
 
-        .input-bar { padding: 16px 20px; background: #090e1a; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-        .input-wrapper { display: flex; align-items: center; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 6px 12px; }
+        /* Stop Generation Button */
+        .stop-gen-btn {
+            display: none; align-items: center; justify-content: center; gap: 6px;
+            background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444;
+            padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; margin: 0 auto 8px auto; width: fit-content; transition: 0.2s;
+        }
+        .stop-gen-btn:hover { background: #ef4444; color: #fff; }
+
+        .input-bar { padding: 14px 20px; background: #090e1a; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 6px; }
+        .file-preview-pill { display: none; background: rgba(6, 182, 212, 0.15); border: 1px solid var(--accent-cyan); color: #a5f3fc; padding: 4px 12px; border-radius: 8px; font-size: 0.78rem; align-items: center; gap: 8px; width: fit-content; }
+        .input-wrapper { display: flex; align-items: center; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 4px 10px; }
         .input-wrapper:focus-within { border-color: var(--accent-cyan); }
-        
-        .icon-btn { background: none; border: none; color: var(--accent-cyan); font-size: 1.2rem; padding: 8px; cursor: pointer; }
+        .icon-btn { background: none; border: none; color: var(--accent-cyan); font-size: 1.1rem; padding: 8px; cursor: pointer; transition: transform 0.2s; }
+        .icon-btn:hover { transform: scale(1.1); }
         .icon-btn.listening { color: #ef4444; }
-        
         .input-wrapper input { width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 0.95rem; padding: 8px; }
-        .send-btn { background: var(--accent-cyan); border: none; color: #000; width: 42px; height: 42px; border-radius: 10px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .send-btn { background: var(--accent-cyan); border: none; color: #000; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
         .send-btn:hover { transform: scale(1.05); }
 
         @media (max-width: 600px) { .msg-row { max-width: 95%; } }
     </style>
 </head>
 <body>
+
+    <!-- Professional Login / Guest Screen -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo"><i class="fa-solid fa-rocket"></i></div>
+            <div class="login-title">Aero Guide AI</div>
+            <div class="login-subtitle">Sign in for unlimited access or explore as Guest</div>
+
+            <button class="auth-btn google" onclick="loginWithGoogle()">
+                <i class="fa-brands fa-google" style="color: #ea4335; font-size: 1.1rem;"></i> Continue with Google
+            </button>
+
+            <button class="auth-btn guest-mode" onclick="continueAsGuest()">
+                <i class="fa-solid fa-user-shield"></i> Continue as Guest (Free Tier)
+            </button>
+
+            <div class="auth-divider"><span>OR SIGN IN WITH EMAIL</span></div>
+
+            <input type="email" id="loginEmail" class="login-input" placeholder="Enter your email">
+            <input type="password" id="loginPassword" class="login-input" placeholder="Enter password / OTP code">
+            <button class="auth-btn" style="background:var(--accent-cyan); color:#000;" onclick="loginWithEmailPass()">
+                <i class="fa-solid fa-envelope"></i> Sign In / Register
+            </button>
+
+            <div class="auth-divider"><span>MOBILE NUMBER (OTP)</span></div>
+            <input type="text" id="loginPhone" class="login-input" placeholder="+91 Your Mobile Number">
+            <button class="auth-btn" style="background:var(--accent-blue); color:#fff;" onclick="loginWithPhone()">
+                <i class="fa-solid fa-phone"></i> Send SMS OTP
+            </button>
+        </div>
+    </div>
 
     <!-- Splash Screen -->
     <div id="splashScreen">
@@ -211,48 +288,69 @@
             <button class="menu-trigger-btn" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="sidebar-body">
-            <button class="new-chat-btn" onclick="clearChat(); toggleSidebar(false);"><i class="fa-solid fa-plus"></i> New Chat</button>
+            <button class="new-chat-btn" onclick="startNewChatSession(); toggleSidebar(false);"><i class="fa-solid fa-plus"></i> New Chat</button>
             <div class="sidebar-section-title">Recent Chats</div>
-            <div class="recent-item"><i class="fa-regular fa-message"></i> Target IMU-CET DNS</div>
-            <div class="recent-item"><i class="fa-regular fa-message"></i> Class 12 Boards Prep</div>
-            <div class="recent-item"><i class="fa-regular fa-message"></i> CUET 2026 Strategy</div>
+            <div id="recentChatsList"></div>
         </div>
         <div class="sidebar-footer">
-            <div class="user-avatar-small">VT</div>
-            <div class="user-info-text">
-                <div class="user-name">Vedansh Tiwari</div>
-                <div class="user-badge">PRO</div>
+            <div class="user-profile-info">
+                <div class="user-avatar-small" id="userInitial">VT</div>
+                <div class="user-info-text">
+                    <div class="user-name" id="userDisplayName">Vedansh Tiwari</div>
+                    <div class="user-badge" id="userBadgeText">PRO MEMBER</div>
+                </div>
             </div>
+            <button class="logout-btn" onclick="logoutUser()" title="Logout / Sign In"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
     </div>
 
     <!-- Main App Container -->
-    <div class="app-container">
+    <div class="app-container" id="appContainer">
         <header class="header">
             <div class="brand-title-wrapper">
                 <button class="menu-trigger-btn" onclick="toggleSidebar(true)" title="Menu"><i class="fa-solid fa-bars"></i></button>
                 <div>
                     <div class="brand-title"><i class="fa-solid fa-rocket"></i> Aero Guide</div>
-                    <div style="margin-top:4px;">
-                        <span class="founder-tag"><i class="fa-solid fa-crown"></i> Created by Vedansh Tiwari</span>
+                    <div class="tag-group">
+                        <span class="founder-tag"><i class="fa-solid fa-crown"></i> Vedansh Tiwari</span>
+                        <span class="streak-tag"><i class="fa-solid fa-fire"></i> <span id="streakDays">1</span> Day Streak</span>
                     </div>
                 </div>
             </div>
             
             <div class="header-actions">
-                <button class="top-btn" onclick="downloadChat()"><i class="fa-solid fa-download"></i> Save Plan</button>
+                <button class="top-btn" onclick="togglePomodoroBar()"><i class="fa-regular fa-clock"></i> Focus</button>
+                <button class="top-btn" onclick="downloadPDF()"><i class="fa-solid fa-download"></i> Save Plan</button>
                 <button class="top-btn reset" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Reset</button>
                 <button class="top-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                 
                 <!-- Options Dropdown -->
                 <div id="optionsDropdown" class="options-dropdown">
-                    <div class="dropdown-item" onclick="downloadChat(); toggleDropdown();"><i class="fa-solid fa-share-nodes"></i> Share / Save</div>
+                    <div class="theme-selector-box">
+                        <span>THEME</span>
+                        <div class="color-dots">
+                            <div class="color-dot dot-cyan" onclick="changeTheme('#06b6d4')" title="Cyan"></div>
+                            <div class="color-dot dot-emerald" onclick="changeTheme('#10b981')" title="Emerald"></div>
+                            <div class="color-dot dot-purple" onclick="changeTheme('#a855f7')" title="Purple"></div>
+                            <div class="color-dot dot-orange" onclick="changeTheme('#f97316')" title="Orange"></div>
+                        </div>
+                    </div>
+                    <div class="dropdown-item" onclick="downloadPDF(); toggleDropdown();"><i class="fa-solid fa-file-pdf"></i> Download PDF</div>
                     <div class="dropdown-item" onclick="alert('Chat Pinned!'); toggleDropdown();"><i class="fa-solid fa-thumbtack"></i> Pin Chat</div>
-                    <div class="dropdown-item" onclick="clearChat(); toggleDropdown();"><i class="fa-solid fa-rotate-right"></i> Reset Chat</div>
                     <div class="dropdown-item danger" onclick="clearChat(); toggleDropdown();"><i class="fa-solid fa-trash"></i> Delete Chat</div>
                 </div>
             </div>
         </header>
+
+        <!-- Pomodoro Bar -->
+        <div id="pomodoroBar" class="pomodoro-bar">
+            <span>⏱️ Pomodoro Focus Mode (25 min)</span>
+            <span id="pomoDisplay" class="pomo-time">25:00</span>
+            <div class="pomo-btns">
+                <button class="pomo-btn" onclick="togglePomoTimer()"><i class="fa-solid fa-play" id="pomoIcon"></i></button>
+                <button class="pomo-btn" onclick="resetPomoTimer()"><i class="fa-solid fa-rotate-left"></i></button>
+            </div>
+        </div>
 
         <div class="quick-chips">
             <div class="chip" onclick="sendQuick('Mujhe 8 ghante ka solid study timetable bana kar do.')">🕒 Study Timetable</div>
@@ -268,7 +366,7 @@
                     <div class="bubble">
                         <strong>Jai Hind! 🚀 Main Aero Guide hoon!</strong><br><br>
                         Mera system <strong>Vedansh Tiwari</strong> dwara architect kiya gaya hai. Main aapki stream, target exams (CUET, DNS, IPMAT) aur strict daily self-discipline strategy planning me 100% help karunga.<br><br>
-                        Naye <strong>Save Plan</strong> aur <strong>Smart Tables</strong> feature ke sath, poocho apna sawaal!
+                        Naye <strong>Stop Generating 🛑</strong> aur <strong>Save PDF</strong> features ke sath, poocho apna sawaal!
                     </div>
                     <div class="timestamp">
                         <span id="initial-time"></span>
@@ -283,8 +381,19 @@
             <i class="fa-solid fa-spinner fa-spin"></i> Aero Guide is planning...
         </div>
 
+        <!-- Stop Generation Button -->
+        <div id="stopGenBtn" class="stop-gen-btn" onclick="stopAIResponse()">
+            <i class="fa-solid fa-stop"></i> Stop Generating
+        </div>
+
         <div class="input-bar">
+            <div id="filePreview" class="file-preview-pill">
+                <i class="fa-solid fa-paperclip"></i> <span id="fileName">notes.txt</span>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="clearFileAttachment()"></i>
+            </div>
             <div class="input-wrapper">
+                <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelect(event)">
+                <button class="icon-btn" onclick="checkUploadPermission()" title="Attach File"><i class="fa-solid fa-paperclip"></i></button>
                 <button class="icon-btn" id="micBtn" onclick="startVoice()"><i class="fa-solid fa-microphone"></i></button>
                 <input type="text" id="userInput" placeholder="Ask Aero Guide about timetable, career, discipline..." onkeydown="handleEnter(event)">
                 <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
@@ -293,54 +402,423 @@
     </div>
 
     <script>
-        // Auto remove Splash Screen from DOM after 2.6 seconds
-        setTimeout(() => {
-            const splash = document.getElementById('splashScreen');
-            if (splash) splash.style.display = 'none';
-        }, 2600);
+        // FIREBASE AUTH CONFIGURATION
+      const  firebaseConfig = {
+  apiKey: "AIzaSyAQOvhwvVl5udmbrZtIOAiR0RHooXSxZz4",
+  authDomain: "aero-guide.firebaseapp.com",
+  projectId: "aero-guide",
+  storageBucket: "aero-guide.firebasestorage.app",
+  messagingSenderId: "79754563153",
+  appId: "1:79754563153:web:ae290b0641dd7c57a1b270",
+  measurementId: "G-X416SFKF2J"
+};
 
-        // Sidebar & Dropdown Controllers
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+        } catch (e) {}
+
+        let guestMessageCount = parseInt(localStorage.getItem('aero_guest_msgs') || '0');
+        const GUEST_LIMIT = 5;
+
+        // Global Control for Stop Generation
+        let abortController = null;
+        let isTypingActive = false;
+        let activeTypingTimeout = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            checkUserLoginState();
+            document.getElementById('initial-time').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            setupStreak();
+            loadSavedTheme();
+            renderRecentSessions();
+        });
+
+        function checkUserLoginState() {
+            const savedUser = localStorage.getItem('aero_logged_user');
+            if (savedUser) {
+                grantAccessToApp(JSON.parse(savedUser));
+            }
+        }
+
+        function continueAsGuest() {
+            const guestData = { name: "Guest User", email: "guest@aeroguide.com", isGuest: true };
+            localStorage.setItem('aero_logged_user', JSON.stringify(guestData));
+            grantAccessToApp(guestData);
+        }
+
+        function grantAccessToApp(user) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('splashScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'flex';
+
+            if(user && user.name) {
+                document.getElementById('userDisplayName').innerText = user.name;
+                document.getElementById('userInitial').innerText = user.name.substring(0, 2).toUpperCase();
+                if(user.isGuest) {
+                    document.getElementById('userBadgeText').innerText = "GUEST TIER (5 Limit)";
+                    document.getElementById('userBadgeText').style.color = "#a855f7";
+                } else {
+                    document.getElementById('userBadgeText').innerText = "PRO MEMBER";
+                    document.getElementById('userBadgeText').style.color = "#fbbf24";
+                }
+            }
+
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                if (splash) splash.style.display = 'none';
+            }, 2600);
+        }
+
+        // 1. ReCAPTCHA Setup for Phone OTP
+window.addEventListener('load', () => {
+    try {
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'invisible'
+        });
+    } catch (e) {}
+});
+
+// 2. Real Google Sign-In
+function loginWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            const userData = { name: user.displayName, email: user.email, isGuest: false };
+            localStorage.setItem('aero_logged_user', JSON.stringify(userData));
+            grantAccessToApp(userData);
+        })
+        .catch((error) => {
+            alert("Google Login Error: " + error.message);
+        });
+}
+
+// 3. Real Email & Password Login / Register
+function loginWithEmailPass() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value.trim();
+    
+    if(!email || !pass) {
+        alert("Kripya Email aur Password dono bharein!");
+        return;
+    }
+
+    firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+            const userData = { name: email.split('@')[0], email: email, isGuest: false };
+            localStorage.setItem('aero_logged_user', JSON.stringify(userData));
+            grantAccessToApp(userData);
+        })
+        .catch((error) => {
+            if (error.code === 'auth/user-not-found') {
+                firebase.auth().createUserWithEmailAndPassword(email, pass)
+                    .then((userCredential) => {
+                        alert("Naya Account Ban Gaya!");
+                        const userData = { name: email.split('@')[0], email: email, isGuest: false };
+                        localStorage.setItem('aero_logged_user', JSON.stringify(userData));
+                        grantAccessToApp(userData);
+                    })
+                    .catch(err => alert("Registration Error: " + err.message));
+            } else {
+                alert("Login Error: Galat Password ya Email!");
+            }
+        });
+}
+
+// Smart Mobile SMS OTP System
+function loginWithPhone() {
+    let phone = document.getElementById('loginPhone').value.trim();
+    
+    if(!phone) {
+        alert("Kripya mobile number bharein!");
+        return;
+    }
+
+    // Agar user ne '+' nahi lagaya aur 10-digit number dala hai, toh auto +91 add kar do
+    if (!phone.startsWith('+')) {
+        if (phone.length === 10) {
+            phone = '+91' + phone;
+        } else {
+            alert("Kripya 10-digit mobile number ya country code ke sath (+91...) dalein!");
+            return;
+        }
+    }
+
+    const appVerifier = window.recaptchaVerifier;
+
+    firebase.auth().signInWithPhoneNumber(phone, appVerifier)
+        .then((confirmationResult) => {
+            const code = prompt("Aapke mobile par SMS OTP bhej diya gaya hai. 6-digit OTP yahan likhein:");
+            if (code) {
+                confirmationResult.confirm(code)
+                    .then((result) => {
+                        const user = result.user;
+                        const userData = { name: "User (" + phone.slice(-4) + ")", email: phone, isGuest: false };
+                        localStorage.setItem('aero_logged_user', JSON.stringify(userData));
+                        grantAccessToApp(userData);
+                    })
+                    .catch(() => alert("Galat OTP! Login cancel ho gaya."));
+            }
+        })
+        .catch((error) => alert("SMS Send Error: " + error.message));
+}
+
+        function simulateSuccessfulLogin(name, isGuest) {
+            const userData = { name: name || "Vedansh Student", email: "pro@aeroguide.com", isGuest: isGuest };
+            localStorage.setItem('aero_logged_user', JSON.stringify(userData));
+            grantAccessToApp(userData);
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('aero_logged_user');
+            try { firebase.auth().signOut(); } catch(e) {}
+            location.reload();
+        }
+
+        function checkUploadPermission() {
+            const saved = JSON.parse(localStorage.getItem('aero_logged_user') || '{}');
+            if (saved.isGuest) {
+                alert("🔒 File and photo uploads are restricted for Guest users.\n\nPlease Sign In with Google or Email to unlock attachments!");
+                return;
+            }
+            document.getElementById('fileInput').click();
+        }
+
+        let attachedFileText = "";
+        let currentSessionId = Date.now().toString();
+        let sessions = {};
+        
+        try {
+            sessions = JSON.parse(localStorage.getItem('aero_sessions')) || {};
+        } catch(e) { sessions = {}; }
+
+        function changeTheme(color) {
+            document.documentElement.style.setProperty('--accent-cyan', color);
+            localStorage.setItem('aero_theme', color);
+        }
+        function loadSavedTheme() {
+            const savedColor = localStorage.getItem('aero_theme');
+            if (savedColor) changeTheme(savedColor);
+        }
+
+        function setupStreak() {
+            try {
+                const lastDate = localStorage.getItem('aero_last_visit');
+                let streak = parseInt(localStorage.getItem('aero_streak_count') || '1');
+                const today = new Date().toDateString();
+
+                if (lastDate && lastDate !== today) {
+                    const prev = new Date(lastDate);
+                    const now = new Date();
+                    const diffDays = Math.round((now - prev) / (1000 * 60 * 60 * 24));
+                    if (diffDays === 1) streak += 1;
+                    else if (diffDays > 1) streak = 1;
+                }
+                localStorage.setItem('aero_last_visit', today);
+                localStorage.setItem('aero_streak_count', streak.toString());
+                const streakEl = document.getElementById('streakDays');
+                if(streakEl) streakEl.innerText = streak;
+            } catch(e) {}
+        }
+
+        function startNewChatSession() {
+            currentSessionId = Date.now().toString();
+            const chatBox = document.getElementById('chatBox');
+            if(chatBox) {
+                chatBox.innerHTML = `
+                    <div class="msg-row ai">
+                        <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div class="bubble-container">
+                            <div class="bubble">Nayi Chat Shuru Ho Gayi Hai! 🚀<br>Batao aaj kya strategy plan karni hai?</div>
+                            <div class="timestamp">Just now</div>
+                        </div>
+                    </div>`;
+            }
+            renderRecentSessions();
+        }
+
+        function saveCurrentChatState(promptTitle) {
+            try {
+                const chatBox = document.getElementById('chatBox');
+                if(!chatBox) return;
+                
+                if (!sessions[currentSessionId]) {
+                    sessions[currentSessionId] = {
+                        title: promptTitle ? promptTitle.substring(0, 22) + "..." : "New Strategy",
+                        html: chatBox.innerHTML
+                    };
+                } else {
+                    sessions[currentSessionId].html = chatBox.innerHTML;
+                }
+                localStorage.setItem('aero_sessions', JSON.stringify(sessions));
+                renderRecentSessions();
+            } catch(e) {}
+        }
+
+        function loadChatSession(id) {
+            if (sessions[id]) {
+                currentSessionId = id;
+                const chatBox = document.getElementById('chatBox');
+                if(chatBox) chatBox.innerHTML = sessions[id].html;
+                toggleSidebar(false);
+            }
+        }
+
+        function deleteSession(e, id) {
+            e.stopPropagation();
+            delete sessions[id];
+            try { localStorage.setItem('aero_sessions', JSON.stringify(sessions)); } catch(err) {}
+            if (currentSessionId.toString() === id.toString()) {
+                startNewChatSession();
+            } else {
+                renderRecentSessions();
+            }
+        }
+
+        function renderRecentSessions() {
+            const container = document.getElementById('recentChatsList');
+            if(!container) return;
+            container.innerHTML = "";
+            const keys = Object.keys(sessions).reverse();
+            if (keys.length === 0) {
+                container.innerHTML = `<div style="color:var(--text-muted); font-size:0.8rem;">No recent chats</div>`;
+                return;
+            }
+            keys.forEach(id => {
+                const div = document.createElement('div');
+                div.className = `recent-item ${id.toString() === currentSessionId.toString() ? 'active' : ''}`;
+                div.onclick = () => loadChatSession(id);
+                div.innerHTML = `
+                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><i class="fa-regular fa-message"></i> ${sessions[id].title}</span>
+                    <i class="fa-solid fa-trash" style="font-size:0.75rem; opacity:0.6" onclick="deleteSession(event, '${id}')"></i>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Pomodoro Timer
+        let pomoInterval;
+        let pomoSeconds = 1500;
+        let pomoRunning = false;
+
+        function togglePomodoroBar() {
+            const bar = document.getElementById('pomodoroBar');
+            if(bar) bar.classList.toggle('active');
+        }
+
+        function togglePomoTimer() {
+            const icon = document.getElementById('pomoIcon');
+            const display = document.getElementById('pomoDisplay');
+            if (pomoRunning) {
+                clearInterval(pomoInterval);
+                pomoRunning = false;
+                if(icon) icon.className = "fa-solid fa-play";
+            } else {
+                pomoRunning = true;
+                if(icon) icon.className = "fa-solid fa-pause";
+                pomoInterval = setInterval(() => {
+                    pomoSeconds--;
+                    let m = Math.floor(pomoSeconds / 60);
+                    let s = pomoSeconds % 60;
+                    if(display) display.innerText = `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+                    if (pomoSeconds <= 0) {
+                        clearInterval(pomoInterval);
+                        alert("Pomodoro Session Complete! Take a 5-min break.");
+                        resetPomoTimer();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetPomoTimer() {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            pomoSeconds = 1500;
+            const display = document.getElementById('pomoDisplay');
+            const icon = document.getElementById('pomoIcon');
+            if(display) display.innerText = "25:00";
+            if(icon) icon.className = "fa-solid fa-play";
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const fileNameEl = document.getElementById('fileName');
+            const filePreviewEl = document.getElementById('filePreview');
+            if(fileNameEl) fileNameEl.innerText = file.name;
+            if(filePreviewEl) filePreviewEl.style.display = 'flex';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                attachedFileText = `[ATTACHED FILE: ${file.name}]\n` + e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        function clearFileAttachment() {
+            const fileInput = document.getElementById('fileInput');
+            const filePreview = document.getElementById('filePreview');
+            if(fileInput) fileInput.value = "";
+            attachedFileText = "";
+            if(filePreview) filePreview.style.display = 'none';
+        }
+
+        function downloadPDF() {
+            const chatBox = document.getElementById('chatBox');
+            if(!chatBox) return;
+            const opt = {
+                margin:       0.5,
+                filename:     'Aero_Guide_Strategy.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(chatBox).save();
+        }
+
         function toggleSidebar(show) {
             const drawer = document.getElementById('sidebarDrawer');
             const overlay = document.getElementById('sidebarOverlay');
-            if (show) {
-                drawer.classList.add('active');
-                overlay.classList.add('active');
-            } else {
-                drawer.classList.remove('active');
-                overlay.classList.remove('active');
-            }
+            if(drawer) drawer.classList.toggle('active', show);
+            if(overlay) overlay.classList.toggle('active', show);
         }
 
         function toggleDropdown(e) {
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('optionsDropdown');
-            dropdown.classList.toggle('show');
+            if(dropdown) dropdown.classList.toggle('show');
         }
 
         window.addEventListener('click', (e) => {
             const dropdown = document.getElementById('optionsDropdown');
-            if (dropdown && dropdown.classList.contains('show')) {
-                dropdown.classList.remove('show');
-            }
+            if (dropdown && dropdown.classList.contains('show')) dropdown.classList.remove('show');
         });
 
-        // Set Initial Time
-        document.getElementById('initial-time').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        // STOP GENERATION FEATURE LOGIC
+        function stopAIResponse() {
+            if (abortController) {
+                abortController.abort(); // Cancel network request
+            }
+            isTypingActive = false; // Stop typewriter timeout loop
+            if (activeTypingTimeout) {
+                clearTimeout(activeTypingTimeout);
+            }
+            
+            if(typingIndicator) typingIndicator.style.display = 'none';
+            document.getElementById('stopGenBtn').style.display = 'none';
+        }
 
+        // Chat Messaging & Typewriter
         const chatBox = document.getElementById('chatBox');
         const userInput = document.getElementById('userInput');
         const typingIndicator = document.getElementById('typingIndicator');
         const micBtn = document.getElementById('micBtn');
 
-        let chatHistoryForDownload = "Aero Guide - Career & Discipline Strategy\nCreated by: Vedansh Tiwari\n==========================================\n\n";
-
         function appendMsg(sender, text) {
+            if(!chatBox) return;
             const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            let logPrefix = sender === 'user' ? "You: " : "Aero Guide: ";
-            chatHistoryForDownload += logPrefix + text + "\n\n";
-
             const row = document.createElement('div');
             row.classList.add('msg-row', sender);
 
@@ -374,20 +852,23 @@
             chatBox.appendChild(row);
 
             if (sender === 'ai') {
-                // Typewriter effect for AI messages
+                isTypingActive = true;
+                document.getElementById('stopGenBtn').style.display = 'flex';
                 let idx = 0;
+                
                 function type() {
+                    if (!isTypingActive) return; // Stop if user clicked Stop
                     if (idx < text.length) {
                         bubble.innerText += text.charAt(idx);
                         idx++;
                         chatBox.scrollTop = chatBox.scrollHeight;
-                        setTimeout(type, 12);
+                        activeTypingTimeout = setTimeout(type, 10);
                     } else {
-                        // After typing finishes, render markdown tables / formatting
-                        if (typeof marked !== 'undefined') {
-                            bubble.innerHTML = marked.parse(text);
-                        }
+                        if (typeof marked !== 'undefined') bubble.innerHTML = marked.parse(text);
                         chatBox.scrollTop = chatBox.scrollHeight;
+                        isTypingActive = false;
+                        document.getElementById('stopGenBtn').style.display = 'none';
+                        saveCurrentChatState();
                     }
                 }
                 type();
@@ -398,119 +879,133 @@
         }
 
         async function sendMessage() {
-            const msg = userInput.value.trim();
-            if (!msg) return;
+            if(!userInput) return;
+            let msg = userInput.value.trim();
+            if (!msg && !attachedFileText) return;
+
+            const savedUser = JSON.parse(localStorage.getItem('aero_logged_user') || '{}');
+            if (savedUser.isGuest) {
+                if (guestMessageCount >= GUEST_LIMIT) {
+                    alert("⚠️ Guest Limit Reached! Aapne free tier ke 5 messages poore kar liye hain.\n\nUnlimited chat karne ke liye kripya Google ya Email se Sign In karein!");
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    return;
+                }
+                guestMessageCount++;
+                localStorage.setItem('aero_guest_msgs', guestMessageCount.toString());
+            }
+
+            let fullPayload = msg;
+            if (attachedFileText) {
+                fullPayload = attachedFileText + "\n\nUser Question: " + msg;
+                clearFileAttachment();
+            }
 
             appendMsg('user', msg);
             userInput.value = '';
-            typingIndicator.style.display = 'block';
-            chatBox.scrollTop = chatBox.scrollHeight;
+            if(typingIndicator) typingIndicator.style.display = 'block';
+            document.getElementById('stopGenBtn').style.display = 'flex';
+            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Smart URL detection for local or live server
             const askUrl = window.location.protocol === 'file:' ? 'https://aeroguide-vedansh.onrender.com/ask' : '/ask';
+
+            // Setup AbortController for Stopping Network Request
+            abortController = new AbortController();
 
             try {
                 const res = await fetch(askUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg })
+                    body: JSON.stringify({ message: fullPayload }),
+                    signal: abortController.signal
                 });
 
                 const data = await res.json();
-                typingIndicator.style.display = 'none';
+                if(typingIndicator) typingIndicator.style.display = 'none';
 
-                if (data.reply) {
+                if (data && data.reply) {
                     appendMsg('ai', data.reply);
+                    saveCurrentChatState(msg);
                 } else {
-                    appendMsg('ai', 'Error receiving response.');
+                    if(isTypingActive) {
+                        appendMsg('ai', 'Error receiving response.');
+                        document.getElementById('stopGenBtn').style.display = 'none';
+                    }
                 }
             } catch (err) {
-                typingIndicator.style.display = 'none';
-                appendMsg('ai', 'Server Connection Error!');
+                if(typingIndicator) typingIndicator.style.display = 'none';
+                document.getElementById('stopGenBtn').style.display = 'none';
+                if (err.name === 'AbortError') {
+                    console.log("Response generation stopped by user.");
+                } else {
+                    appendMsg('ai', 'Server Connection Error!');
+                }
             }
         }
 
         function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
-        function sendQuick(text) { userInput.value = text; sendMessage(); }
+        function sendQuick(text) { if(userInput) userInput.value = text; sendMessage(); }
 
         function copyText(el) {
-            const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
-            navigator.clipboard.writeText(text);
-            el.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-            setTimeout(() => el.innerHTML = '<i class="fa-regular fa-copy"></i> Copy', 2000);
+            try {
+                const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
+                navigator.clipboard.writeText(text);
+                el.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => el.innerHTML = '<i class="fa-regular fa-copy"></i> Copy', 2000);
+            } catch(e) {}
         }
 
         function speakText(el) {
-            const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'hi-IN';
-            window.speechSynthesis.speak(utterance);
+            try {
+                const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN';
+                window.speechSynthesis.speak(utterance);
+            } catch(e) {}
         }
 
         async function clearChat() {
-            chatHistoryForDownload = "Aero Guide - Career & Discipline Strategy\nCreated by: Vedansh Tiwari\n==========================================\n\n";
-            chatBox.innerHTML = `
-                <div class="msg-row ai">
-                    <div class="avatar"><i class="fa-solid fa-robot"></i></div>
-                    <div class="bubble-container">
-                        <div class="bubble">Chat reset ho chuka hai! Main <strong>Aero Guide 🚀</strong> (Created by <strong>Vedansh Tiwari</strong>). Aage batao kya help chahiye?</div>
-                        <div class="timestamp">Just now</div>
+            if(chatBox) {
+                chatBox.innerHTML = `
+                    <div class="msg-row ai">
+                        <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div class="bubble-container">
+                            <div class="bubble">Chat reset ho chuka hai! Main <strong>Aero Guide 🚀</strong> (Created by <strong>Vedansh Tiwari</strong>). Aage batao kya help chahiye?</div>
+                            <div class="timestamp">Just now</div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+            saveCurrentChatState("Reset Chat");
             try {
                 const resetUrl = window.location.protocol === 'file:' ? 'https://aeroguide-vedansh.onrender.com/reset' : '/reset';
                 await fetch(resetUrl, { method: 'POST' });
-            } catch (err) {
-                console.log("Memory reset fail", err);
-            }
-        }
-
-        function downloadChat() {
-            const blob = new Blob([chatHistoryForDownload], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Aero_Guide_Strategy.txt';
-            a.click();
-            URL.revokeObjectURL(url);
+            } catch (err) {}
         }
 
         function startVoice() {
+            if (window.location.protocol === 'file:') {
+                alert("⚠️ Note: Browser security ki wajah se Mic local file par blocked hota hai. Live Server ya Render par run karein!");
+            }
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 const rec = new SpeechRecognition();
                 rec.lang = 'hi-IN';
 
-                rec.onstart = () => { micBtn.classList.add('listening'); };
+                rec.onstart = () => { if(micBtn) micBtn.classList.add('listening'); };
                 rec.onresult = (e) => {
-                    userInput.value = e.results[0][0].transcript;
-                    micBtn.classList.remove('listening');
+                    if(userInput) userInput.value = e.results[0][0].transcript;
+                    if(micBtn) micBtn.classList.remove('listening');
                     sendMessage();
                 };
-                rec.onerror = () => micBtn.classList.remove('listening');
-                rec.onend = () => micBtn.classList.remove('listening');
+                rec.onerror = () => { if(micBtn) micBtn.classList.remove('listening'); };
+                rec.onend = () => { if(micBtn) micBtn.classList.remove('listening'); };
                 rec.start();
             } else {
                 alert("Voice command Chrome browser me support karta hai!");
             }
         }
-
-        // Auto Scroll Observer
-        document.addEventListener("DOMContentLoaded", function () {
-            function autoScroll() {
-                if (chatBox) {
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-            }
-            const observer = new MutationObserver(function () {
-                autoScroll();
-            });
-            if (chatBox) {
-                observer.observe(chatBox, { childList: true, subtree: true });
-            }
-        });
     </script>
+    <div id="recaptcha-container"></div>
 </body>
 </html>

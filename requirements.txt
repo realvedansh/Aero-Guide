@@ -4,3 +4,5 @@ groq
 openai
 requests
 gunicorn
+duckduckgo_search
+ddgs

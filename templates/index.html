@@ -1,48 +1,10 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <!-- CROSS-BROWSER MOBILE VIEWPORT FIX
-         Chrome (and most mobile browsers) size 100vh against the "large" viewport
-         (as if the address bar were hidden). In normal mode, with the address bar
-         visible, real content ends up taller than what's actually visible, so the
-         bottom of the app (input bar, etc.) gets pushed off-screen with no way to
-         scroll to it. `dvh` fixes this in modern engines, but many in-app/WebView
-         browsers (including content:// viewers) don't support it. This script sets
-         a --vh custom property from the REAL visible height (window.innerHeight /
-         visualViewport) as a universal fallback that works everywhere, and keeps it
-         in sync as the address bar shows/hides, on rotation, or when the keyboard opens. -->
-    <script>
-        (function () {
-            function setVH() {
-                var vv = window.visualViewport;
-                var h = (vv && vv.height) ? vv.height : window.innerHeight;
-                document.documentElement.style.setProperty('--vh', (h * 0.01) + 'px');
-            }
-            setVH();
-            window.addEventListener('resize', setVH, { passive: true });
-            window.addEventListener('orientationchange', function () { setTimeout(setVH, 150); });
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', setVH, { passive: true });
-                window.visualViewport.addEventListener('scroll', setVH, { passive: true });
-            }
-            document.addEventListener('DOMContentLoaded', setVH);
-        })();
-    </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aero Guide 🚀 | Created by Vedansh Tiwari</title>
-
-    <!-- PWA / CROSS-PLATFORM INSTALLABILITY (Android, iOS, Windows, Linux) -->
-    <meta name="theme-color" content="#0b0f19">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Aero Guide">
-    <meta name="description" content="Aero Guide AI - Advanced study companion for CUET, DNS, IPMAT & board exam students.">
-    <link rel="manifest" id="manifestLink" href="data:application/manifest+json,%7B%22name%22%3A%22Aero%20Guide%20AI%22%2C%22short_name%22%3A%22AeroGuide%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b0f19%22%2C%22theme_color%22%3A%22%2306b6d4%22%2C%22orientation%22%3A%22any%22%7D">
-    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f680.png">
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f680.png">
-
+    
     <!-- Google Fonts: Plus Jakarta Sans & Kalam (Handwritten Style) -->
     <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -83,21 +45,16 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        html {
-            height: 100%; width: 100%; overflow: hidden;
-        }
-
         body {
             background-color: var(--bg-dark); color: var(--text-main);
-            width: 100%; max-width: 100vw;
-            height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100); display: flex; justify-content: center; align-items: center; padding: 10px;
-            overflow: hidden; overscroll-behavior: none;
+            height: 100vh; height: 100dvh; display: flex; justify-content: center; align-items: center; padding: 10px;
+            overflow: hidden;
             transition: background-color 0.3s ease;
         }
 
         /* 1. LOGIN / GUEST SCREEN */
         #loginScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center;
             z-index: 10000; transition: opacity 0.4s ease;
         }
@@ -129,14 +86,12 @@
         .login-input {
             width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
             border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; margin-bottom: 10px;
-            font-family: inherit;
         }
         .login-input:focus { border-color: var(--accent-cyan); }
-        textarea.login-input { resize: vertical; }
 
         /* 2. SPLASH SCREEN */
         #splashScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center;
             z-index: 9999; animation: hideSplash 0.5s ease-out 2.5s forwards; display: none;
         }
@@ -156,10 +111,10 @@
         @keyframes fadeInSubtitle { to { opacity: 1; } }
 
         /* 3. SIDEBAR DRAWER */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100); background: rgba(0,0,0,0.6); z-index: 1000; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background: rgba(0,0,0,0.6); z-index: 1000; }
         .sidebar-overlay.active { display: block; }
         .sidebar-drawer {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100);
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; height: 100dvh;
             background: #090e1a; border-right: 1px solid rgba(255,255,255,0.1);
             z-index: 1001; transition: left 0.3s ease; display: flex; flex-direction: column;
         }
@@ -181,7 +136,7 @@
 
         /* 4. APP MAIN CONTAINER */
         .app-container {
-            width: 100%; max-width: 1100px; height: 95vh; height: 95dvh; height: calc(var(--vh, 1vh) * 95);
+            width: 100%; max-width: 1100px; height: 95vh; height: 95dvh;
             background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); position: relative; display: none;
@@ -208,14 +163,14 @@
         .three-dot-trigger {
             background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff;
             width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s; flex-shrink: 0;
+            transition: 0.2s;
         }
         .three-dot-trigger:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
 
         .options-dropdown {
             position: absolute; top: 48px; right: 0; background: #131b2e;
             border: 1px solid rgba(255,255,255,0.15); border-radius: 16px;
-            width: 250px; display: none; flex-direction: column; overflow: hidden; max-height: 70vh; overflow-y: auto;
+            width: 240px; display: none; flex-direction: column; overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
         }
         .options-dropdown.show { display: flex; animation: fadeInDropdown 0.2s ease-in-out; }
@@ -250,20 +205,15 @@
         .quick-chips {
             padding: 10px 20px; display: flex; gap: 8px; overflow-x: auto;
             background: #0d1424; border-bottom: 1px solid rgba(255, 255, 255, 0.05); scrollbar-width: none;
-            align-items: center;
         }
         .quick-chips::-webkit-scrollbar { display: none; }
         .chip {
             background: var(--accent-glow); border: 1px solid var(--accent-cyan);
             color: #a5f3fc; padding: 6px 14px; border-radius: 16px; font-size: 0.8rem;
             font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+            display: flex; align-items: center; gap: 6px;
         }
         .chip:hover { background: var(--accent-cyan); color: #000; }
-
-        /* CHAT SEARCH BAR */
-        #chatSearchBar { display: none; }
-        #chatSearchBar input { flex: 1; margin-bottom: 0; }
 
         /* CHAT BOX */
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-bottom: 95px; }
@@ -279,7 +229,6 @@
         .bubble {
             padding: 14px 18px; border-radius: 18px; font-size: 0.94rem; line-height: 1.6; word-break: break-word;
         }
-        .bubble img { max-width: 100%; border-radius: 12px; margin: 6px 0; display: block; }
         .user .bubble { background: var(--accent-blue); color: #ffffff; border-bottom-right-radius: 4px; }
         .ai .bubble { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-main); border-bottom-left-radius: 4px; }
         
@@ -329,7 +278,6 @@
         .bubble th { background-color: var(--accent-glow); color: var(--accent-cyan); }
         .bubble ul, .bubble ol { margin-left: 20px; margin-top: 5px; margin-bottom: 5px; }
         
-        .code-block-wrapper { position: relative; }
         .bubble pre[class*="language-"] {
             border-radius: 12px;
             margin: 10px 0;
@@ -339,12 +287,6 @@
             overflow-x: auto;
         }
         .bubble code[class*="language-"] { font-size: 0.88rem !important; }
-        .code-copy-btn {
-            position: absolute; top: 18px; right: 8px; background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 0.68rem;
-            padding: 4px 9px; border-radius: 6px; cursor: pointer; opacity: 0.75; transition: 0.2s; z-index: 2;
-        }
-        .code-copy-btn:hover { opacity: 1; background: var(--accent-cyan); color: #000; }
 
         .timestamp { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .user .timestamp { justify-content: flex-end; }
@@ -387,11 +329,10 @@
         .input-wrapper input { width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 0.95rem; padding: 8px 12px; }
         .send-btn { background: var(--accent-cyan); border: none; color: #000; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0;}
         .send-btn:hover { transform: scale(1.08); }
-        .char-counter { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
 
         /* ALL MODALS GENERAL STYLES */
         .app-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100);
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 20000;
             justify-content: center; align-items: center; flex-direction: column; padding: 15px;
         }
@@ -423,15 +364,14 @@
         .modal-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         .fc-btn { background: var(--accent-cyan); border: none; color: #000; padding: 9px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
         .fc-btn:hover { transform: scale(1.05); }
-        .fc-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         /* FORMULA HUB MODAL */
         .modal-box {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 24px; padding: 25px; width: 100%; max-width: 600px; max-height: 85vh;
+            border-radius: 24px; padding: 25px; width: 100%; max-width: 600px; max-height: 80vh;
             overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
-        .tab-bar { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; flex-wrap: wrap; }
+        .tab-bar { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .tab-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
         .tab-btn.active { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); }
         .formula-list { display: flex; flex-direction: column; gap: 12px; }
@@ -444,19 +384,9 @@
         .quiz-opt.correct { background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #34d399; }
         .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #f87171; }
 
-        /* AI IMAGE STUDIO MODAL */
-        #studioResultArea { display: none; text-align: center; }
-        #studioLoading { display: none; color: var(--accent-cyan); font-weight: 700; padding: 30px 0; }
-        #studioResultImg { display: none; max-width: 100%; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .studio-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 8px; }
-        .studio-gallery-item { position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
-        .studio-gallery-item:hover { border-color: var(--accent-cyan); transform: scale(1.03); }
-        .studio-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .studio-gallery-empty { color: var(--text-muted); font-size: 0.8rem; padding: 10px; grid-column: 1/-1; }
-
         /* 8. CHATGPT-STYLE LIVE VOICE MODE MODAL */
         #liveVoiceModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; height: calc(var(--vh, 1vh) * 100);
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             background: radial-gradient(circle at center, #111e38 0%, #060a14 100%);
             z-index: 30000; flex-direction: column; justify-content: space-between; align-items: center;
             padding: 30px 20px; transition: opacity 0.3s ease;
@@ -516,33 +446,8 @@
 
         @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ZEN / FOCUS MODE */
-        .app-container.zen-mode .quick-chips,
-        .app-container.zen-mode .pomodoro-bar,
-        .app-container.zen-mode .tag-group,
-        .app-container.zen-mode #chatSearchBar { display: none !important; }
-
-        /* TOAST NOTIFICATIONS */
-        .toast-container {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            z-index: 50000; display: flex; flex-direction: column; gap: 8px; align-items: center;
-            pointer-events: none; width: 100%; max-width: 90vw;
-        }
-        .toast {
-            background: #131b2e; border: 1px solid rgba(255,255,255,0.15); color: #fff;
-            padding: 10px 18px; border-radius: 30px; font-size: 0.82rem; font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); opacity: 0; transform: translateY(10px);
-            animation: toastIn 0.25s ease forwards, toastOut 0.3s ease forwards 2.7s;
-            display: flex; align-items: center; gap: 8px; white-space: nowrap;
-        }
-        .toast.success { border-color: #10b981; color: #34d399; }
-        .toast.error { border-color: #ef4444; color: #f87171; }
-        .toast.warn { border-color: #f59e0b; color: #fbbf24; }
-        @keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
-        @keyframes toastOut { to { opacity: 0; transform: translateY(-10px); } }
-
         @media (max-width: 600px) {
-            .app-container { height: 98vh; height: 98dvh; height: calc(var(--vh, 1vh) * 98); padding: 5px; }
+            .app-container { height: 98vh; height: 98dvh; padding: 5px; }
             .msg-row { max-width: 95%; }
             .chat-box { padding-bottom: 105px; }
             .brand-title { font-size: 1.1rem; }
@@ -551,160 +456,6 @@
             .input-wrapper { border-radius: 25px; }
             .flashcard-card { width: 290px; height: 210px; }
             .voice-orb { width: 170px; height: 170px; }
-            .toast { font-size: 0.75rem; white-space: normal; }
-
-            /* Detach the options menu from the header so a short app-container
-               (overflow:hidden) can never clip its bottom items */
-            .options-dropdown {
-                position: fixed; top: auto; bottom: max(12px, env(safe-area-inset-bottom));
-                right: 10px; left: 10px; width: auto;
-                max-height: min(70vh, calc(var(--vh, 1vh) * 70));
-            }
-        }
-
-        /* =====================================================
-           CROSS-PLATFORM RESPONSIVE + ACCESSIBILITY LAYER (NEW)
-           Covers: small phones, tablets, laptops, wide desktops,
-           iOS safe-areas, foldables, keyboard focus, reduced motion
-           ===================================================== */
-
-        html { -webkit-text-size-adjust: 100%; }
-        body {
-            padding-top: max(10px, env(safe-area-inset-top));
-            padding-bottom: max(10px, env(safe-area-inset-bottom));
-            padding-left: max(10px, env(safe-area-inset-left));
-            padding-right: max(10px, env(safe-area-inset-right));
-            -webkit-tap-highlight-color: transparent;
-        }
-        button, .chip, .icon-btn, .tab-btn, .dropdown-item, .three-dot-trigger, .menu-trigger-btn { touch-action: manipulation; }
-
-        /* Smooth momentum scrolling on old iOS/Android WebViews + contain
-           overscroll so scrolling a panel never rubber-bands or drags the
-           whole page (a common cause of "broken feeling" layouts on mobile) */
-        .chat-box, .sidebar-body, .options-dropdown, .modal-box,
-        #plannerModal .modal-box, #dashboardModal .modal-box, #bookmarksModal .modal-box,
-        #shortcutsModal .modal-box, #formulaHubModal .modal-box {
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-        }
-
-        /* Prevent any single element (long word, unbroken link, wide table)
-           from forcing horizontal scroll on narrow screens */
-        img, video, table { max-width: 100%; }
-
-        /* Ensure text inputs never trigger iOS auto-zoom (min 16px) while
-           still respecting the user's chosen font-size preference elsewhere */
-        input, textarea, select { font-size: max(16px, 1em); }
-
-        /* Visible keyboard focus everywhere (a11y) */
-        button:focus-visible, input:focus-visible, textarea:focus-visible, .chip:focus-visible, .recent-item:focus-visible {
-            outline: 2px solid var(--accent-cyan); outline-offset: 2px;
-        }
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
-        }
-
-        /* LIGHT MODE (independent of accent color) */
-        body.light-mode {
-            --bg-dark: #f4f6fb; --card-bg: #ffffff; --text-main: #12172b; --text-muted: #5b6478;
-            --border-color: rgba(10, 20, 40, 0.1);
-        }
-        body.light-mode .header, body.light-mode .quick-chips, body.light-mode .pomodoro-bar, body.light-mode .sidebar-drawer, body.light-mode .sidebar-footer { background: #eef1f8; }
-        body.light-mode .ai .bubble { background: rgba(10,20,40,0.05); border-color: rgba(10,20,40,0.08); }
-        body.light-mode .input-wrapper { background: #ffffff; border-color: rgba(10,20,40,0.15); }
-        body.light-mode .options-dropdown, body.light-mode .modal-box, body.light-mode #loginScreen, body.light-mode #splashScreen { background: #ffffff; }
-        body.light-mode .toast { background: #ffffff; color: #12172b; }
-        body.light-mode .icon-btn, body.light-mode .send-btn i {}
-
-        /* Font-size accessibility scaling */
-        body.font-sm .bubble { font-size: 0.85rem; }
-        body.font-lg .bubble { font-size: 1.08rem; }
-        body.font-xl .bubble { font-size: 1.22rem; }
-
-        /* Offline banner */
-        .offline-banner {
-            display: none; position: absolute; top: 0; left: 0; right: 0; z-index: 5000;
-            background: #f59e0b; color: #1c1300; font-size: 0.78rem; font-weight: 800;
-            text-align: center; padding: 6px 10px;
-        }
-        .offline-banner.show { display: block; }
-
-        /* Install App button/pill */
-        .install-pill {
-            display: none; align-items: center; gap: 6px; background: rgba(6,182,212,0.15);
-            border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-weight: 700;
-            font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; cursor: pointer;
-        }
-        .install-pill.show { display: inline-flex; }
-
-        /* Keyboard shortcuts modal list */
-        .kbd-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem; }
-        .kbd-key { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-family: monospace; font-size: 0.78rem; }
-
-        /* Study Planner */
-        .planner-add-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-        .planner-add-row input, .planner-add-row select { flex: 1; min-width: 110px; margin-bottom: 0; }
-        .planner-task { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; }
-        .planner-task.done { opacity: 0.5; text-decoration: line-through; }
-        .planner-task .ptask-info { flex: 1; }
-        .planner-task .ptask-subject { font-size: 0.68rem; color: var(--accent-cyan); font-weight: 800; text-transform: uppercase; }
-        .planner-task .ptask-title { font-size: 0.9rem; font-weight: 600; }
-        .planner-task .ptask-due { font-size: 0.7rem; color: var(--text-muted); }
-        .exam-countdown-box { background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(37,99,235,0.1)); border: 1px solid var(--accent-cyan); border-radius: 14px; padding: 12px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .exam-countdown-box .ecb-days { font-size: 1.6rem; font-weight: 800; color: var(--accent-cyan); }
-
-        /* Progress Dashboard */
-        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
-        .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 14px; text-align: center; }
-        .stat-card .stat-num { font-size: 1.5rem; font-weight: 800; color: var(--accent-cyan); }
-        .stat-card .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.78rem; }
-        .bar-row .bar-label { width: 70px; flex-shrink: 0; color: var(--text-muted); }
-        .bar-track { flex: 1; height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--accent-cyan); border-radius: 6px; transition: width 0.4s ease; }
-
-        /* Bookmarks */
-        .bookmark-star { cursor: pointer; }
-        .bookmark-star.active { color: #fbbf24; }
-        .bookmark-item { padding: 10px 12px; background: rgba(255,255,255,0.03); border-radius: 10px; margin-bottom: 6px; font-size: 0.82rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); }
-        .bookmark-item:hover { border-color: var(--accent-cyan); }
-
-        /* TABLET (>= 601px) */
-        @media (min-width: 601px) and (max-width: 1023px) {
-            .app-container { max-width: 92vw; }
-            .msg-row { max-width: 80%; }
-        }
-
-        /* DESKTOP / LAPTOP (>= 1024px): persistent sidebar, wider canvas */
-        @media (min-width: 1024px) {
-            body { padding: 24px; }
-            .app-container { max-width: 1280px; height: 92vh; height: 92dvh; height: calc(var(--vh, 1vh) * 92); }
-            .msg-row { max-width: 72%; }
-            .chat-box { padding: 28px 40px 95px 40px; }
-            .header { padding: 16px 28px; }
-            .input-bar { padding: 14px 40px; }
-            .input-wrapper input { font-size: 1rem; }
-
-            /* Sidebar docks permanently beside the app instead of overlaying it */
-            .sidebar-overlay { display: none !important; }
-            .sidebar-drawer {
-                position: relative; left: 0 !important; height: auto; border-radius: 20px;
-                margin-right: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            }
-            body.sidebar-collapsed .sidebar-drawer { display: none; }
-            .desktop-shell { display: flex; align-items: stretch; width: 100%; max-width: 1280px; height: 92vh; height: 92dvh; height: calc(var(--vh, 1vh) * 92); }
-            .desktop-shell .app-container { margin: 0; flex: 1; height: 100%; }
-        }
-
-        /* Ultra-wide desktop */
-        @media (min-width: 1600px) {
-            .app-container { max-width: 1440px; }
-        }
-
-        /* Foldable / very small height screens (landscape phones) */
-        @media (max-height: 480px) {
-            .voice-orb { width: 120px; height: 120px; }
-            .flashcard-card { height: 170px; }
         }
     </style>
 </head>
@@ -770,10 +521,9 @@
 
     <!-- 4. REVISION FLASHCARDS MODAL -->
     <div id="flashcardModal" class="app-modal">
-        <h3 style="color:#fff; margin-bottom:6px; font-weight:800; font-size:1.3rem;">
+        <h3 style="color:#fff; margin-bottom:15px; font-weight:800; font-size:1.3rem;">
             <i class="fa-solid fa-bolt" style="color:var(--accent-cyan)"></i> Revision Flashcards Mode
         </h3>
-        <p style="color:var(--text-muted); font-size:0.75rem; margin-bottom:12px;" id="fcDueBadge">0 cards due for spaced revision today</p>
         <div class="flashcard-card" onclick="flipFlashcard(this)">
             <div class="flashcard-inner">
                 <div class="flashcard-front">
@@ -783,11 +533,7 @@
                 <div class="flashcard-back" id="fcAnswer">A: F = k * (|q1*q2| / r^2) - Force between static point charges!</div>
             </div>
         </div>
-        <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:12px;">Tap card to flip answer 🔄</p>
-        <div class="modal-controls" style="margin-bottom:10px;">
-            <button class="fc-btn" style="background:rgba(239,68,68,0.2); color:#f87171;" onclick="rateFlashcard('forgot')"><i class="fa-solid fa-rotate-left"></i> Forgot</button>
-            <button class="fc-btn" style="background:rgba(16,185,129,0.2); color:#34d399;" onclick="rateFlashcard('easy')"><i class="fa-solid fa-check"></i> Got it</button>
-        </div>
+        <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:15px;">Tap card to flip answer 🔄</p>
         <div class="modal-controls">
             <button class="fc-btn" onclick="prevFlashcard()"><i class="fa-solid fa-arrow-left"></i> Prev</button>
             <button class="fc-btn" onclick="nextFlashcard()">Next <i class="fa-solid fa-arrow-right"></i></button>
@@ -829,141 +575,7 @@
         </div>
     </div>
 
-    <!-- 7. AI IMAGE STUDIO MODAL (NEW) -->
-    <div id="imageStudioModal" class="app-modal">
-        <div class="modal-box" style="max-width:640px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="color:#fff; font-size:1.2rem;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-cyan)"></i> AI Image Studio</h3>
-                <button class="fc-btn" style="background:#ef4444; color:#fff; padding:4px 10px;" onclick="closeModal('imageStudioModal')">✕</button>
-            </div>
-
-            <textarea id="studioPrompt" class="login-input" style="min-height:70px;" placeholder="Describe the image you want... e.g. Cinematic futuristic study room with neon lights"></textarea>
-
-            <div class="sidebar-section-title" style="margin-top:12px;">STYLE</div>
-            <div class="tab-bar" id="studioStyleChips">
-                <button class="tab-btn active" onclick="selectStudioStyle(this,'none')">Default</button>
-                <button class="tab-btn" onclick="selectStudioStyle(this,'realistic photography, 8k, detailed')">Realistic</button>
-                <button class="tab-btn" onclick="selectStudioStyle(this,'anime style, studio ghibli inspired')">Anime</button>
-                <button class="tab-btn" onclick="selectStudioStyle(this,'cyberpunk, neon lights, futuristic')">Cyberpunk</button>
-                <button class="tab-btn" onclick="selectStudioStyle(this,'watercolor painting, soft brush strokes')">Watercolor</button>
-                <button class="tab-btn" onclick="selectStudioStyle(this,'3d render, octane render, cinematic lighting')">3D Render</button>
-                <button class="tab-btn" onclick="selectStudioStyle(this,'pencil sketch, hand drawn, monochrome')">Sketch</button>
-            </div>
-
-            <div class="sidebar-section-title" style="margin-top:12px;">ASPECT RATIO</div>
-            <div class="tab-bar" id="studioAspectChips">
-                <button class="tab-btn active" onclick="selectStudioAspect(this,'square')">Square</button>
-                <button class="tab-btn" onclick="selectStudioAspect(this,'portrait')">Portrait</button>
-                <button class="tab-btn" onclick="selectStudioAspect(this,'landscape')">Landscape</button>
-            </div>
-
-            <button class="fc-btn" id="studioGenerateBtn" style="width:100%; margin-top:16px;" onclick="runImageGeneration()"><i class="fa-solid fa-sparkles"></i> Generate Image</button>
-
-            <div id="studioResultArea">
-                <div id="studioLoading"><i class="fa-solid fa-spinner fa-spin"></i> Painting your image...</div>
-                <img id="studioResultImg" alt="Generated image">
-                <div class="modal-controls" style="margin-top:12px;">
-                    <button class="fc-btn" onclick="downloadImage(currentStudioImageUrl, 'aero-guide-art.jpg')"><i class="fa-solid fa-download"></i> Download</button>
-                    <button class="fc-btn" style="background:var(--accent-blue); color:#fff;" onclick="sendGeneratedImageToChat()"><i class="fa-solid fa-paper-plane"></i> Send to Chat</button>
-                    <button class="fc-btn" style="background:rgba(255,255,255,0.1); color:#fff;" onclick="runImageGeneration(true)"><i class="fa-solid fa-rotate"></i> Regenerate</button>
-                </div>
-            </div>
-
-            <div class="sidebar-section-title" style="margin-top:20px;">RECENT GENERATIONS</div>
-            <div id="studioGallery" class="studio-gallery"></div>
-        </div>
-    </div>
-
-    <!-- 9. STUDY PLANNER + EXAM COUNTDOWN MODAL (NEW) -->
-    <div id="plannerModal" class="app-modal">
-        <div class="modal-box" style="max-width:560px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="color:#fff; font-size:1.2rem;"><i class="fa-solid fa-calendar-check" style="color:var(--accent-cyan)"></i> Study Planner & Exam Countdown</h3>
-                <button class="fc-btn" style="background:#ef4444; color:#fff; padding:4px 10px;" onclick="closeModal('plannerModal')">✕</button>
-            </div>
-
-            <div class="exam-countdown-box">
-                <div>
-                    <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;" id="examNameLabel">Target Exam</div>
-                    <div style="font-weight:800; font-size:0.95rem;" id="examNameValue">Not set</div>
-                </div>
-                <div style="text-align:right;">
-                    <div class="ecb-days" id="examDaysLeft">--</div>
-                    <div style="font-size:0.68rem; color:var(--text-muted);">days left</div>
-                </div>
-            </div>
-            <div class="planner-add-row">
-                <input type="text" id="examNameInput" class="login-input" placeholder="Exam name (e.g. CUET 2027)">
-                <input type="date" id="examDateInput" class="login-input" style="flex:0 0 150px;">
-                <button class="fc-btn" onclick="saveExamCountdown()">Set</button>
-            </div>
-
-            <div class="sidebar-section-title">Add Study Task</div>
-            <div class="planner-add-row">
-                <select id="taskSubjectInput" class="login-input">
-                    <option>Physics</option><option>Chemistry</option><option>Maths</option>
-                    <option>English</option><option>General</option>
-                </select>
-                <input type="text" id="taskTitleInput" class="login-input" placeholder="Task (e.g. Revise Ch 3)">
-            </div>
-            <div class="planner-add-row">
-                <input type="date" id="taskDateInput" class="login-input">
-                <button class="fc-btn" style="background:var(--accent-blue); color:#fff;" onclick="addPlannerTask()"><i class="fa-solid fa-plus"></i> Add Task</button>
-            </div>
-
-            <div class="sidebar-section-title" style="margin-top:14px;">Your Tasks</div>
-            <div id="plannerTaskList"></div>
-        </div>
-    </div>
-
-    <!-- 10. PROGRESS DASHBOARD MODAL (NEW) -->
-    <div id="dashboardModal" class="app-modal">
-        <div class="modal-box" style="max-width:560px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="color:#fff; font-size:1.2rem;"><i class="fa-solid fa-chart-simple" style="color:var(--accent-cyan)"></i> Progress Dashboard</h3>
-                <button class="fc-btn" style="background:#ef4444; color:#fff; padding:4px 10px;" onclick="closeModal('dashboardModal')">✕</button>
-            </div>
-            <div class="stat-grid">
-                <div class="stat-card"><div class="stat-num" id="dashStreak">1</div><div class="stat-label">Day Streak</div></div>
-                <div class="stat-card"><div class="stat-num" id="dashFocusMins">0</div><div class="stat-label">Focus Minutes</div></div>
-                <div class="stat-card"><div class="stat-num" id="dashQuizzes">0</div><div class="stat-label">Quiz Attempts</div></div>
-                <div class="stat-card"><div class="stat-num" id="dashAccuracy">0%</div><div class="stat-label">Quiz Accuracy</div></div>
-            </div>
-            <div class="sidebar-section-title">Tasks Completed by Subject</div>
-            <div id="dashBarChart"></div>
-        </div>
-    </div>
-
-    <!-- 11. BOOKMARKS MODAL (NEW) -->
-    <div id="bookmarksModal" class="app-modal">
-        <div class="modal-box" style="max-width:560px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="color:#fff; font-size:1.2rem;"><i class="fa-solid fa-bookmark" style="color:var(--accent-cyan)"></i> Saved Bookmarks</h3>
-                <button class="fc-btn" style="background:#ef4444; color:#fff; padding:4px 10px;" onclick="closeModal('bookmarksModal')">✕</button>
-            </div>
-            <div id="bookmarksList"></div>
-        </div>
-    </div>
-
-    <!-- 12. KEYBOARD SHORTCUTS MODAL (NEW, desktop helper) -->
-    <div id="shortcutsModal" class="app-modal">
-        <div class="modal-box" style="max-width:420px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="color:#fff; font-size:1.2rem;"><i class="fa-solid fa-keyboard" style="color:var(--accent-cyan)"></i> Keyboard Shortcuts</h3>
-                <button class="fc-btn" style="background:#ef4444; color:#fff; padding:4px 10px;" onclick="closeModal('shortcutsModal')">✕</button>
-            </div>
-            <div class="kbd-row"><span>New chat</span><span class="kbd-key">Ctrl + N</span></div>
-            <div class="kbd-row"><span>Search this chat</span><span class="kbd-key">Ctrl + K</span></div>
-            <div class="kbd-row"><span>Focus message box</span><span class="kbd-key">/</span></div>
-            <div class="kbd-row"><span>Send message</span><span class="kbd-key">Enter</span></div>
-            <div class="kbd-row"><span>New line in message</span><span class="kbd-key">Shift + Enter</span></div>
-            <div class="kbd-row"><span>Close any panel</span><span class="kbd-key">Esc</span></div>
-            <div class="kbd-row"><span>Show this help</span><span class="kbd-key">Ctrl + /</span></div>
-        </div>
-    </div>
-
-    <!-- 8. SIDEBAR DRAWER OVERLAY & PANEL + 9. MAIN APP CONTAINER (grouped for desktop docked-sidebar layout) -->
-    <div class="desktop-shell">
+    <!-- 7. SIDEBAR DRAWER OVERLAY & PANEL -->
     <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebarDrawer" class="sidebar-drawer">
         <div class="sidebar-header">
@@ -972,13 +584,7 @@
         </div>
         <div class="sidebar-body">
             <button class="new-chat-btn" onclick="startNewChatSession(); toggleSidebar(false);"><i class="fa-solid fa-plus"></i> New Chat</button>
-
-            <div class="sidebar-section-title">Study Tools</div>
-            <div class="recent-item" onclick="openPlannerModal()"><span><i class="fa-solid fa-calendar-check"></i> Study Planner & Countdown</span></div>
-            <div class="recent-item" onclick="openDashboardModal()"><span><i class="fa-solid fa-chart-simple"></i> Progress Dashboard</span></div>
-            <div class="recent-item" onclick="openBookmarksModal()"><span><i class="fa-solid fa-bookmark"></i> Saved Bookmarks</span></div>
-
-            <div class="sidebar-section-title" style="margin-top:16px;">Recent Chats</div>
+            <div class="sidebar-section-title">Recent Chats</div>
             <div id="recentChatsList"></div>
         </div>
         <div class="sidebar-footer">
@@ -993,7 +599,7 @@
         </div>
     </div>
 
-    <!-- 9. MAIN APP CONTAINER -->
+    <!-- 8. MAIN APP CONTAINER -->
     <div class="app-container" id="appContainer">
         <header class="header">
             <div class="brand-title-wrapper">
@@ -1008,15 +614,9 @@
             </div>
             
             <div class="header-actions">
-                <button class="install-pill" id="installPillBtn" onclick="triggerInstallPrompt()"><i class="fa-solid fa-download"></i> Install App</button>
                 <span class="user-badge-header" id="headerUserBadge">
                     <i class="fa-solid fa-user"></i> Loading...
                 </span>
-
-                <!-- SEARCH BUTTON (NEW) -->
-                <button class="three-dot-trigger" onclick="toggleChatSearch()" title="Search Chat">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
 
                 <!-- 3-DOT MENU BUTTON -->
                 <button class="three-dot-trigger" onclick="toggleDropdown(event)" title="Options Menu">
@@ -1037,22 +637,12 @@
                         </div>
                     </div>
                     <button class="dropdown-item" onclick="startLiveVoiceMode(); toggleDropdown();"><i class="fa-solid fa-microphone-lines" style="color:var(--accent-cyan);"></i> Open Live Voice Orb Mode</button>
-                    <button class="dropdown-item" onclick="openImageStudio(); toggleDropdown();"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-cyan);"></i> AI Image Studio</button>
                     <button class="dropdown-item" onclick="openFormulaHub(); toggleDropdown();"><i class="fa-solid fa-book-bookmark"></i> Formula & Reaction Hub</button>
                     <button class="dropdown-item" onclick="startQuizEngine(); toggleDropdown();"><i class="fa-solid fa-graduation-cap"></i> Interactive PYQ Quiz Engine</button>
                     <button class="dropdown-item" onclick="togglePomodoroBar(); toggleDropdown();"><i class="fa-regular fa-clock"></i> Pomodoro Focus Timer</button>
                     <button class="dropdown-item" onclick="openFlashcardModal(); toggleDropdown();"><i class="fa-solid fa-bolt"></i> Revision Flashcards Mode</button>
-                    <button class="dropdown-item" onclick="openPlannerModal(); toggleDropdown();"><i class="fa-solid fa-calendar-check" style="color:var(--accent-cyan);"></i> Study Planner & Countdown</button>
-                    <button class="dropdown-item" onclick="openDashboardModal(); toggleDropdown();"><i class="fa-solid fa-chart-simple" style="color:var(--accent-cyan);"></i> Progress Dashboard</button>
-                    <button class="dropdown-item" onclick="openBookmarksModal(); toggleDropdown();"><i class="fa-solid fa-bookmark"></i> Saved Bookmarks</button>
-                    <button class="dropdown-item" onclick="toggleZenMode(); toggleDropdown();"><i class="fa-solid fa-spa"></i> Zen Focus Mode</button>
-                    <button class="dropdown-item" onclick="toggleLightDarkMode(); toggleDropdown();"><i class="fa-solid fa-circle-half-stroke"></i> <span id="lightDarkLabel">Switch to Light Mode</span></button>
-                    <button class="dropdown-item" onclick="cycleFontSize(); toggleDropdown();"><i class="fa-solid fa-text-height"></i> Text Size: <span id="fontSizeLabel" style="margin-left:4px;">Normal</span></button>
-                    <button class="dropdown-item" onclick="openShortcutsModal(); toggleDropdown();"><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</button>
-                    <button class="dropdown-item" id="installAppMenuBtn" style="display:none;" onclick="triggerInstallPrompt(); toggleDropdown();"><i class="fa-solid fa-download" style="color:var(--accent-cyan);"></i> Install Aero Guide App</button>
                     <button class="dropdown-item" onclick="downloadPDF(); toggleDropdown();"><i class="fa-solid fa-file-pdf"></i> Save Strategy PDF</button>
                     <button class="dropdown-item" onclick="exportChatAsImage(); toggleDropdown();"><i class="fa-solid fa-image"></i> Export Notes as Image (PNG)</button>
-                    <button class="dropdown-item" onclick="exportChatAsText(); toggleDropdown();"><i class="fa-solid fa-file-lines"></i> Export Chat as Text</button>
                     <button class="dropdown-item danger" onclick="clearChat(); toggleDropdown();"><i class="fa-solid fa-rotate-right"></i> Reset Chat History</button>
                 </div>
             </div>
@@ -1068,23 +658,14 @@
             </div>
         </div>
 
-        <!-- CHAT SEARCH BAR (NEW) -->
-        <div class="quick-chips" id="chatSearchBar">
-            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
-            <input type="text" id="chatSearchInput" class="login-input" style="margin-bottom:0;" placeholder="Search this conversation..." oninput="performChatSearch(this.value)">
-            <button class="fc-btn" style="background:#ef4444; color:#fff; flex-shrink:0;" onclick="toggleChatSearch()">Close</button>
-        </div>
-
         <!-- QUICK CHIPS -->
-        <div class="quick-chips" id="quickChipsBar">
+        <div class="quick-chips">
             <div class="chip" onclick="startLiveVoiceMode()">🎙️ Live Voice Orb Mode</div>
-            <div class="chip" onclick="openImageStudio()">🎨 AI Image Studio</div>
+            <div class="chip" onclick="sendQuick('/image Cinematic futuristic study room with neon lights')">🎨 Generate Study Art</div>
             <div class="chip" onclick="sendQuick('Mujhe 8 ghante ka PCM solid study timetable bana kar do.')">🕒 PCM Timetable</div>
             <div class="chip" onclick="startQuizEngine()">📝 PYQ Quiz Test</div>
             <div class="chip" onclick="openFormulaHub()">📐 Formula Hub</div>
             <div class="chip" onclick="openFlashcardModal()">🎴 Flashcards</div>
-            <div class="chip" onclick="openPlannerModal()">📅 Study Planner</div>
-            <div class="chip" onclick="openDashboardModal()">📊 Progress</div>
         </div>
 
         <!-- CHATBOX CONTAINER -->
@@ -1095,15 +676,13 @@
                     <div class="bubble">
                         <strong>Jai Hind! 🚀 Main Aero Guide hoon!</strong><br><br>
                         Mera system <strong>Vedansh Tiwari</strong> dwara architect kiya gaya hai. Main aapki stream, target exams (CUET, DNS, IPMAT) aur strict daily self-discipline strategy planning me 100% help karunga.<br><br>
-                        Naye <strong>Live Voice Orb Mode 🎙️</strong>, <strong>AI Image Studio 🎨</strong>, <strong>Quiz Engine 📝</strong>, aur <strong>Smart Model Routing 🧠</strong> features ke sath, poocho apna sawaal! Type <code>/image [prompt]</code> kabhi bhi image banane ke liye.
+                        Naye <strong>Live Voice Orb Mode 🎙️</strong>, <strong>AI Image Generation 🎨</strong>, <strong>Quiz Engine 📝</strong>, aur <strong>Smart Model Routing 🧠</strong> features ke sath, poocho apna sawaal!
                     </div>
                     <div class="timestamp">
                         <span id="initial-time"></span>
                         <span class="tool-btn" onclick="copyText(this)"><i class="fa-regular fa-copy"></i> Copy</span>
                         <span class="tool-btn" onclick="speakText(this)"><i class="fa-solid fa-volume-high"></i> Listen</span>
                         <span class="tool-btn" onclick="toggleSpeechSpeed(this)" style="color:var(--accent-cyan); font-weight:700;">1.0x</span>
-                        <span class="tool-btn bookmark-star" onclick="toggleBookmark(this, this.closest('.bubble-container').querySelector('.bubble').innerText)"><i class="fa-regular fa-star"></i> Save</span>
-                        <span class="tool-btn" onclick="shareAnswer(this.closest('.bubble-container').querySelector('.bubble').innerText)"><i class="fa-solid fa-share-nodes"></i> Share</span>
                     </div>
                 </div>
             </div>
@@ -1131,20 +710,14 @@
                 
                 <button class="icon-btn" onclick="checkUploadPermission('file')" title="Attach notes / document"><i class="fa-solid fa-paperclip"></i></button>
                 <button class="icon-btn" onclick="checkUploadPermission('camera')" title="Directly snap doubt question photo"><i class="fa-solid fa-camera"></i></button>
-                <button class="icon-btn" onclick="openImageStudio()" title="AI Image Studio"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
                 <button class="icon-btn" id="micBtn" onclick="startLiveVoiceMode()" title="Open ChatGPT-Style Live Voice Mode"><i class="fa-solid fa-microphone"></i></button>
                 
-                <input type="text" id="userInput" placeholder="Ask Aero Guide or type /image [prompt]..." onkeydown="handleEnter(event)" oninput="updateCharCounter()">
+                <input type="text" id="userInput" placeholder="Ask Aero Guide or type /image [prompt]..." onkeydown="handleEnter(event)">
                 <button class="send-btn" onclick="sendMessage()" title="Send Question"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
-            <p style="color:var(--text-muted); font-size:0.7rem; margin-top:3px;">Aero Guide AI can make mistakes. Verify important info. <span id="charCounter" class="char-counter"></span></p>
+            <p style="color:var(--text-muted); font-size:0.7rem; margin-top:3px;">Aero Guide AI can make mistakes. Verify important info.</p>
         </div>
     </div>
-    </div><!-- /.desktop-shell -->
-
-    <!-- TOAST NOTIFICATION CONTAINER (NEW) -->
-    <div id="toastContainer" class="toast-container"></div>
-    <div id="offlineBanner" class="offline-banner"><i class="fa-solid fa-wifi"></i> You're offline — cached chats still work. Reconnect for AI replies.</div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
@@ -1223,7 +796,6 @@
         let isFetchPending = false;
         let activeTypingTimeout = null;
         let speechSpeed = 1.0;
-        let lastUserPayload = '';
 
         // LIVE VOICE MODE STATE MACHINE
         let liveRec = null;
@@ -1231,6 +803,8 @@
         let isLiveMuted = false;
         let liveState = 'idle';
 
+        // NOTE: removed the duplicate DOMContentLoaded + duplicate Firebase init
+        // block that existed in the original file — they ran everything twice.
         document.addEventListener("DOMContentLoaded", () => {
             checkUserLoginState();
             const initTimeEl = document.getElementById('initial-time');
@@ -1240,20 +814,6 @@
             setupStreak();
             loadSavedTheme();
             renderRecentSessions();
-            renderStudioGallery();
-
-            // Restore any unsent draft message
-            const userInput = document.getElementById('userInput');
-            if (userInput) {
-                try {
-                    const draft = localStorage.getItem('aero_draft_msg');
-                    if (draft) userInput.value = draft;
-                } catch(e){}
-                userInput.addEventListener('input', () => {
-                    try { localStorage.setItem('aero_draft_msg', userInput.value); } catch(e){}
-                });
-                updateCharCounter();
-            }
         });
 
         function checkUserLoginState() {
@@ -1353,6 +913,7 @@
         }
 
         let attachedFileText = "";
+        let attachedFileImageData = null; // base64 image data, if an image was attached
         let currentSessionId = Date.now().toString();
         let sessions = {};
         try { sessions = JSON.parse(localStorage.getItem('aero_sessions') || '{}'); } catch(e){ sessions = {}; }
@@ -1376,57 +937,16 @@
             if (dropdown) dropdown.classList.toggle('show');
         }
 
+        // Close the dropdown when clicking anywhere else on the page
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('optionsDropdown');
             const trigger = document.querySelector('.three-dot-trigger');
             if (dropdown && dropdown.classList.contains('show')) {
-                if (!dropdown.contains(e.target) && (!trigger || (e.target !== trigger && !trigger.contains(e.target)))) {
+                if (!dropdown.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) {
                     dropdown.classList.remove('show');
                 }
             }
         });
-
-        // Light haptic tap for supported mobile browsers (silently no-ops elsewhere)
-        function hapticTap() {
-            try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
-        }
-
-        // Edge-swipe gestures for a native app feel on touch devices:
-        // swipe right from the left edge opens the sidebar, swipe left closes it.
-        (function setupSidebarSwipeGestures() {
-            let touchStartX = 0, touchStartY = 0, tracking = false;
-            const EDGE_ZONE = 24; // px from the left edge that can start an "open" swipe
-            const THRESHOLD = 60; // px of horizontal movement to trigger the gesture
-
-            document.addEventListener('touchstart', (e) => {
-                if (!e.touches || e.touches.length !== 1) return;
-                const t = e.touches[0];
-                touchStartX = t.clientX;
-                touchStartY = t.clientY;
-                const drawer = document.getElementById('sidebarDrawer');
-                const isOpen = drawer && drawer.classList.contains('active');
-                tracking = isOpen || touchStartX <= EDGE_ZONE;
-            }, { passive: true });
-
-            document.addEventListener('touchend', (e) => {
-                if (!tracking) return;
-                tracking = false;
-                const t = e.changedTouches && e.changedTouches[0];
-                if (!t) return;
-                const dx = t.clientX - touchStartX;
-                const dy = t.clientY - touchStartY;
-                if (Math.abs(dx) < THRESHOLD || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-                const drawer = document.getElementById('sidebarDrawer');
-                const isOpen = drawer && drawer.classList.contains('active');
-                if (dx > 0 && !isOpen && touchStartX <= EDGE_ZONE) {
-                    toggleSidebar(true);
-                    hapticTap();
-                } else if (dx < 0 && isOpen) {
-                    toggleSidebar(false);
-                    hapticTap();
-                }
-            }, { passive: true });
-        })();
 
         function changeTheme(color) {
             document.documentElement.style.setProperty('--accent-cyan', color);
@@ -1549,22 +1069,10 @@
             else renderRecentSessions();
         }
 
-        // --- TOAST NOTIFICATIONS (NEW) ---
-        function showToast(message, type) {
-            const container = document.getElementById('toastContainer');
-            if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = `toast ${type || ''}`;
-            let icon = 'fa-circle-info';
-            if (type === 'success') icon = 'fa-circle-check';
-            if (type === 'error') icon = 'fa-circle-exclamation';
-            if (type === 'warn') icon = 'fa-triangle-exclamation';
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => { try { toast.remove(); } catch(e){} }, 3000);
-        }
-
         // --- MESSAGE RENDERING HELPERS ---
+
+        // Renders a markdown-formatted message (with code blocks, math, DeepSeek-style
+        // <think> blocks) into the chat box for either the 'user' or 'ai' role.
         function appendMsg(role, rawText) {
             const chatBox = document.getElementById('chatBox');
             if (!chatBox || rawText === undefined || rawText === null) return;
@@ -1582,6 +1090,7 @@
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
 
+            // Pull out DeepSeek-style <think>...</think> blocks into a collapsible box
             let thinkHtml = '';
             let visibleText = rawText;
             const thinkMatch = /<think>([\s\S]*?)<\/think>/gi.exec(rawText);
@@ -1618,27 +1127,9 @@
                 speedBtn.innerText = speechSpeed + 'x';
                 speedBtn.onclick = () => toggleSpeechSpeed(speedBtn);
 
-                const regenBtn = document.createElement('span');
-                regenBtn.className = 'tool-btn';
-                regenBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> Regenerate';
-                regenBtn.onclick = () => regenerateLastResponse();
-
-                const starBtn = document.createElement('span');
-                starBtn.className = 'tool-btn bookmark-star';
-                starBtn.innerHTML = '<i class="fa-regular fa-star"></i> Save';
-                starBtn.onclick = () => toggleBookmark(starBtn, visibleText);
-
-                const shareBtn = document.createElement('span');
-                shareBtn.className = 'tool-btn';
-                shareBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Share';
-                shareBtn.onclick = () => shareAnswer(visibleText);
-
                 timestamp.appendChild(copyBtn);
                 timestamp.appendChild(speakBtn);
                 timestamp.appendChild(speedBtn);
-                timestamp.appendChild(regenBtn);
-                timestamp.appendChild(starBtn);
-                timestamp.appendChild(shareBtn);
             }
 
             bubbleContainer.appendChild(bubble);
@@ -1648,11 +1139,14 @@
             chatBox.appendChild(row);
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            // Syntax highlight any code blocks
             try { if (typeof Prism !== 'undefined') Prism.highlightAllUnder(bubble); } catch(e) {}
-            addCopyButtonsToCodeBlocks(bubble);
+            // Render any math formulas in the new bubble
             renderMathFormulas(bubble);
         }
 
+        // Runs KaTeX auto-render over a given DOM element (used for chat bubbles,
+        // flashcards, and the formula hub).
         function renderMathFormulas(el) {
             try {
                 if (typeof renderMathInElement !== 'undefined' && el) {
@@ -1669,32 +1163,9 @@
             } catch(e) {}
         }
 
-        // Adds a small "Copy" button to every code block in a chat bubble (NEW)
-        function addCopyButtonsToCodeBlocks(container) {
-            if (!container) return;
-            const blocks = container.querySelectorAll('pre[class*="language-"]');
-            blocks.forEach(pre => {
-                if (pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
-                const wrapper = document.createElement('div');
-                wrapper.className = 'code-block-wrapper';
-                pre.parentNode.insertBefore(wrapper, pre);
-                wrapper.appendChild(pre);
-                const btn = document.createElement('button');
-                btn.className = 'code-copy-btn';
-                btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-                btn.onclick = () => {
-                    try {
-                        navigator.clipboard.writeText(pre.innerText);
-                        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
-                        setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy'; }, 1500);
-                    } catch(e){}
-                };
-                wrapper.appendChild(btn);
-            });
-        }
-
         function clearFileAttachment() {
             attachedFileText = "";
+            attachedFileImageData = null;
             const filePreviewEl = document.getElementById('filePreview');
             const fileInput = document.getElementById('fileInput');
             const cameraInput = document.getElementById('cameraInput');
@@ -1703,6 +1174,8 @@
             if (cameraInput) cameraInput.value = '';
         }
 
+        // Compresses an image client-side (via canvas) before attaching it, so large
+        // photos don't blow up the payload sent to the backend.
         function compressAndSetImage(file) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1722,8 +1195,8 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    const compressedData = canvas.toDataURL('image/jpeg', 0.7);
-                    attachedFileText = `[ATTACHED IMAGE: ${file.name}]\n${compressedData}`;
+                    attachedFileImageData = canvas.toDataURL('image/jpeg', 0.7);
+                    attachedFileText = `[ATTACHED IMAGE: ${file.name}]`;
                 };
                 img.src = e.target.result;
             };
@@ -1888,140 +1361,6 @@
                 }, 2000);
             }
         }
-
-        // --- AI IMAGE STUDIO ENGINE (NEW) ---
-        // Uses Pollinations.ai's free, key-free image generation endpoint so image
-        // generation works immediately in the browser without needing a custom backend.
-        let studioSelectedStyle = 'none';
-        let studioSelectedAspect = 'square';
-        let currentStudioImageUrl = null;
-        let currentStudioPrompt = '';
-        let imageGallery = [];
-        try { imageGallery = JSON.parse(localStorage.getItem('aero_image_gallery') || '[]'); } catch(e){ imageGallery = []; }
-
-        function openImageStudio() {
-            const modal = document.getElementById('imageStudioModal');
-            if (modal) modal.classList.add('active');
-            renderStudioGallery();
-        }
-
-        function selectStudioStyle(btn, style) {
-            document.querySelectorAll('#studioStyleChips .tab-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            studioSelectedStyle = style;
-        }
-
-        function selectStudioAspect(btn, aspect) {
-            document.querySelectorAll('#studioAspectChips .tab-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            studioSelectedAspect = aspect;
-        }
-
-        function buildPollinationsUrl(prompt, style, aspect) {
-            const stylePrefix = style && style !== 'none' ? `${style}, ` : '';
-            const fullPrompt = stylePrefix + prompt;
-            const dims = { square: [1024, 1024], portrait: [768, 1024], landscape: [1024, 768] }[aspect] || [1024, 1024];
-            const seed = Math.floor(Math.random() * 1000000);
-            const encoded = encodeURIComponent(fullPrompt);
-            return `https://image.pollinations.ai/prompt/${encoded}?width=${dims[0]}&height=${dims[1]}&seed=${seed}&nologo=true`;
-        }
-
-        function runImageGeneration(isRegenerate) {
-            const promptEl = document.getElementById('studioPrompt');
-            const typed = promptEl ? promptEl.value.trim() : '';
-            const finalPrompt = isRegenerate ? (currentStudioPrompt || typed) : typed;
-
-            if (!finalPrompt) {
-                showToast('Pehle image ka prompt likhein!', 'warn');
-                return;
-            }
-            currentStudioPrompt = finalPrompt;
-
-            const resultArea = document.getElementById('studioResultArea');
-            const loading = document.getElementById('studioLoading');
-            const img = document.getElementById('studioResultImg');
-            const genBtn = document.getElementById('studioGenerateBtn');
-
-            resultArea.style.display = 'block';
-            loading.style.display = 'block';
-            img.style.display = 'none';
-            if (genBtn) genBtn.disabled = true;
-
-            const url = buildPollinationsUrl(finalPrompt, studioSelectedStyle, studioSelectedAspect);
-
-            const preload = new Image();
-            preload.onload = () => {
-                currentStudioImageUrl = url;
-                img.src = url;
-                img.style.display = 'inline-block';
-                loading.style.display = 'none';
-                if (genBtn) genBtn.disabled = false;
-                saveToGallery(url, finalPrompt);
-                showToast('Image ready! 🎨', 'success');
-            };
-            preload.onerror = () => {
-                loading.style.display = 'none';
-                if (genBtn) genBtn.disabled = false;
-                showToast('Image generate nahi ho payi. Dubara try karein.', 'error');
-            };
-            preload.src = url;
-        }
-
-        function saveToGallery(url, prompt) {
-            imageGallery.unshift({ url, prompt, ts: Date.now() });
-            if (imageGallery.length > 24) imageGallery = imageGallery.slice(0, 24);
-            try { localStorage.setItem('aero_image_gallery', JSON.stringify(imageGallery)); } catch(e){}
-            renderStudioGallery();
-        }
-
-        function renderStudioGallery() {
-            const container = document.getElementById('studioGallery');
-            if (!container) return;
-            container.innerHTML = '';
-            if (imageGallery.length === 0) {
-                container.innerHTML = '<div class="studio-gallery-empty">Koi image abhi tak generate nahi hui.</div>';
-                return;
-            }
-            imageGallery.forEach(item => {
-                const wrap = document.createElement('div');
-                wrap.className = 'studio-gallery-item';
-                wrap.title = item.prompt;
-                wrap.innerHTML = `<img src="${item.url}" alt="Generated image" loading="lazy">`;
-                wrap.onclick = () => {
-                    currentStudioImageUrl = item.url;
-                    currentStudioPrompt = item.prompt;
-                    const promptEl = document.getElementById('studioPrompt');
-                    if (promptEl) promptEl.value = item.prompt;
-                    document.getElementById('studioResultArea').style.display = 'block';
-                    document.getElementById('studioLoading').style.display = 'none';
-                    const resImg = document.getElementById('studioResultImg');
-                    resImg.src = item.url;
-                    resImg.style.display = 'inline-block';
-                };
-                container.appendChild(wrap);
-            });
-        }
-
-        function downloadImage(url, filename) {
-            if (!url) { showToast('Pehle koi image generate karein.', 'warn'); return; }
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename || 'aero-guide-art.jpg';
-            link.target = '_blank';
-            link.rel = 'noopener';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        }
-
-        function sendGeneratedImageToChat() {
-            if (!currentStudioImageUrl) { showToast('Pehle koi image generate karein.', 'warn'); return; }
-            appendMsg('ai', `🎨 **Generated Image:** _${currentStudioPrompt}_\n\n![Generated Art](${currentStudioImageUrl})`);
-            saveCurrentChatState(currentStudioPrompt);
-            closeModal('imageStudioModal');
-            showToast('Image chat me bhej di gayi!', 'success');
-        }
-
         // --- REVISION FLASHCARDS LOGIC ---
         const defaultFlashcards = [
             { topic: "Physics Class 12", q: "Q: What is Coulomb's Law?", a: "Formula: $$F = k \\cdot \\frac{|q_1 q_2|}{r^2}$$\nForce between two static point charges." },
@@ -2039,7 +1378,6 @@
         function openFlashcardModal() {
             currentFcIdx = 0;
             updateFlashcardView();
-            updateDueBadge();
             const modal = document.getElementById('flashcardModal');
             if (modal) modal.classList.add('active');
         }
@@ -2089,9 +1427,10 @@
             if(!a) return;
             flashcardData.push({ topic: "Custom Note", q: "Q: " + q, a: a });
             try { localStorage.setItem('aero_custom_fc', JSON.stringify(flashcardData)); } catch(e){}
-            showToast('New Flashcard Added! ✅', 'success');
+            alert("✅ New Flashcard Added!");
             currentFcIdx = flashcardData.length - 1;
             updateFlashcardView();
+            openFlashcardModal();
         }
 
         // --- FORMULA HUB LOGIC ---
@@ -2195,11 +1534,9 @@
             if (selected === correct) {
                 btn.classList.add('correct');
                 playSFX('receive');
-                logQuizAttempt(true);
             } else {
                 btn.classList.add('wrong');
                 if (allBtns[correct]) allBtns[correct].classList.add('correct');
-                logQuizAttempt(false);
             }
 
             const expBox = document.getElementById('quizExplanation');
@@ -2210,192 +1547,11 @@
         }
 
         function loadNextQuizQuestion() {
-            currentQuizIdx++;
-            if (currentQuizIdx >= sampleQuiz.length) currentQuizIdx = 0;
+            currentQuizIdx = (currentQuizIdx + 1) % sampleQuiz.length;
             renderQuizQuestion();
         }
 
-        // --- POMODORO TIMER LOGIC ---
-        let pomoSeconds = 25 * 60;
-        let pomoInterval = null;
-        let pomoRunning = false;
-
-        function togglePomodoroBar() {
-            const bar = document.getElementById('pomodoroBar');
-            if (bar) bar.classList.toggle('active');
-        }
-
-        function togglePomoTimer() {
-            const icon = document.getElementById('pomoIcon');
-            if (pomoRunning) {
-                clearInterval(pomoInterval);
-                pomoRunning = false;
-                if (icon) icon.className = 'fa-solid fa-play';
-            } else {
-                pomoRunning = true;
-                if (icon) icon.className = 'fa-solid fa-pause';
-                pomoInterval = setInterval(() => {
-                    pomoSeconds--;
-                    if (pomoSeconds <= 0) {
-                        clearInterval(pomoInterval);
-                        pomoRunning = false;
-                        showToast('Focus session complete! Take a 5 min break 🎉', 'success');
-                        logFocusMinutes(25);
-                        pomoSeconds = 25 * 60;
-                    }
-                    updatePomoDisplay();
-                }, 1000);
-            }
-        }
-
-        function resetPomoTimer() {
-            clearInterval(pomoInterval);
-            pomoRunning = false;
-            pomoSeconds = 25 * 60;
-            const icon = document.getElementById('pomoIcon');
-            if (icon) icon.className = 'fa-solid fa-play';
-            updatePomoDisplay();
-        }
-
-        function updatePomoDisplay() {
-            const m = Math.floor(pomoSeconds / 60).toString().padStart(2, '0');
-            const s = (pomoSeconds % 60).toString().padStart(2, '0');
-            const display = document.getElementById('pomoDisplay');
-            if (display) display.innerText = `${m}:${s}`;
-        }
-
-        // --- ZEN MODE ---
-        function toggleZenMode() {
-            const container = document.getElementById('appContainer');
-            if (container) container.classList.toggle('zen-mode');
-        }
-
-        // --- CHAT SEARCH ---
-        function toggleChatSearch() {
-            const bar = document.getElementById('chatSearchBar');
-            if (!bar) return;
-            const isShown = bar.style.display === 'flex';
-            bar.style.display = isShown ? 'none' : 'flex';
-            if (!isShown) {
-                const input = document.getElementById('chatSearchInput');
-                if (input) input.focus();
-            } else {
-                performChatSearch('');
-            }
-        }
-
-        function performChatSearch(term) {
-            const rows = document.querySelectorAll('#chatBox .msg-row');
-            const lower = term.toLowerCase();
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = (!lower || text.includes(lower)) ? 'flex' : 'none';
-            });
-        }
-
-        // --- TEXT TOOLS ---
-        function copyText(el) {
-            const bubble = el.closest('.bubble-container').querySelector('.bubble');
-            if (bubble) {
-                navigator.clipboard.writeText(bubble.innerText);
-                showToast('Copied to clipboard! 📋', 'success');
-            }
-        }
-
-        // Share an AI answer via the native mobile share sheet when available,
-        // falling back to clipboard copy on desktop / unsupported browsers.
-        function shareAnswer(text) {
-            const shareText = (text || '').trim();
-            if (!shareText) return;
-            if (navigator.share) {
-                navigator.share({ title: 'Aero Guide', text: shareText }).catch(() => {});
-            } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(shareText);
-                showToast('Share not supported here — copied instead! 📋', 'success');
-            }
-        }
-
-        function speakText(el) {
-            const bubble = el.closest('.bubble-container').querySelector('.bubble');
-            if (bubble) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(bubble.innerText);
-                utterance.lang = 'hi-IN';
-                utterance.rate = speechSpeed;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
-        function toggleSpeechSpeed(el) {
-            const speeds = [1.0, 1.25, 1.5, 0.75];
-            const currentIdx = speeds.indexOf(speechSpeed);
-            speechSpeed = speeds[(currentIdx + 1) % speeds.length];
-            el.innerText = speechSpeed + 'x';
-        }
-
-        function regenerateLastResponse() {
-            if (lastUserPayload) {
-                sendMessage(lastUserPayload, true);
-            }
-        }
-
-        // --- EXPORT TOOLS ---
-        function downloadPDF() {
-            const chatBox = document.getElementById('chatBox');
-            if (!chatBox || typeof html2pdf === 'undefined') return;
-            html2pdf().from(chatBox).set({ filename: 'aero-guide-strategy.pdf', margin: 10 }).save();
-        }
-
-        function exportChatAsImage() {
-            const chatBox = document.getElementById('chatBox');
-            if (!chatBox || typeof html2canvas === 'undefined') return;
-            html2canvas(chatBox).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'aero-guide-notes.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
-        }
-
-        function exportChatAsText() {
-            const chatBox = document.getElementById('chatBox');
-            if (!chatBox) return;
-            const text = chatBox.innerText;
-            const blob = new Blob([text], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'aero-guide-chat.txt';
-            link.click();
-        }
-
-        function clearChat() {
-            if (!confirm("Kya aap poori chat history reset karna chahte hain?")) return;
-            startNewChatSession();
-            showToast('Chat history reset ho gayi!', 'success');
-        }
-
-        // --- CORE CHAT SEND LOGIC ---
-        function sendQuick(text) {
-            const input = document.getElementById('userInput');
-            if (input) input.value = text;
-            sendMessage();
-        }
-
-        function updateCharCounter() {
-            const input = document.getElementById('userInput');
-            const counter = document.getElementById('charCounter');
-            if (input && counter) {
-                counter.innerText = input.value.length > 0 ? `${input.value.length} chars` : '';
-            }
-        }
-
-        function handleEnter(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-
+        // --- FILE & CAMERA PICKER WITH IMAGE COMPRESSION ---
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2404,471 +1560,281 @@
             if (fileNameEl) fileNameEl.innerText = file.name;
             if (filePreviewEl) filePreviewEl.style.display = 'flex';
 
-            if (file.type.startsWith('image/')) {
+            if (file.type && file.type.startsWith('image/')) {
                 compressAndSetImage(file);
             } else {
                 const reader = new FileReader();
-                reader.onload = (e) => { attachedFileText = `[ATTACHED FILE: ${file.name}]\n${e.target.result}`; };
+                reader.onload = function(e) {
+                    attachedFileText = `[ATTACHED FILE (${file.name})]:\n` + e.target.result;
+                };
                 reader.readAsText(file);
             }
         }
 
-        function stopAIResponse() {
-            if (abortController) abortController.abort();
-            isFetchPending = false;
-            if (activeTypingTimeout) clearTimeout(activeTypingTimeout);
-            document.getElementById('typingIndicator').style.display = 'none';
-            document.getElementById('stopGenBtn').style.display = 'none';
-        }
+        // --- SEND MESSAGE (the previously-broken block, now a proper function) ---
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const chatBox = document.getElementById('chatBox');
+            const stopGenBtn = document.getElementById('stopGenBtn');
 
-        async function sendMessage(overrideText, isRegen) {
-            const input = document.getElementById('userInput');
-            let text = overrideText || (input ? input.value.trim() : '');
-            if (!text && !attachedFileText) return;
+            const msg = userInput ? userInput.value.trim() : '';
+            if (!msg) return;
 
-            let saved = {};
-            try { saved = JSON.parse(localStorage.getItem('aero_logged_user') || '{}'); } catch(e){}
-            if (saved.isGuest && guestMessageCount >= GUEST_LIMIT) {
-                alert("Guest message limit reached! Please Sign In for unlimited access.");
+            playSFX('send');
+
+            // --- AI IMAGE GENERATION HANDLER ---
+            if (msg.toLowerCase().startsWith('/image') || msg.toLowerCase().startsWith('image:')) {
+                let imgPrompt = msg.replace(/\/image|image:/gi, '').trim();
+                appendMsg('user', msg);
+                saveCurrentChatState(msg);
+                userInput.value = '';
+                clearFileAttachment();
+                
+                if(typingIndicator) {
+                    typingIndicator.style.display = 'block';
+                    typingIndicator.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aero Guide is painting your image with DALL-E 3...';
+                }
+                if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+
+                const imgUrlEndpoint = window.location.protocol === 'file:' ? 'https://aeroguide-vedansh.onrender.com/generate_image' : '/generate_image';
+                
+                try {
+                    const res = await fetch(imgUrlEndpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: imgPrompt })
+                    });
+
+                    const data = await res.json();
+                    if(typingIndicator) typingIndicator.style.display = 'none';
+
+                    if (data && data.image_url) {
+                        appendMsg('ai', `🎨 **Yeh rahi aapki generated image:**\n\n![Generated Art](${data.image_url})`);
+                    } else {
+                        appendMsg('ai', '⚠️ Image generation failed. Please try a different prompt.');
+                    }
+                } catch (err) {
+                    if(typingIndicator) typingIndicator.style.display = 'none';
+                    appendMsg('ai', '⚠️ Image server connection error.');
+                }
                 return;
             }
+            // -----------------------------------
 
-            if (!isRegen) {
-                appendMsg('user', text);
-                lastUserPayload = text;
-                saveCurrentChatState(text);
+            let savedUser = {};
+            try { savedUser = JSON.parse(localStorage.getItem('aero_logged_user') || '{}'); } catch(e){}
+            
+            if (savedUser.isGuest) {
+                if (guestMessageCount >= GUEST_LIMIT) {
+                    alert("⚠️ Guest Limit Reached! Free tier ke 5 messages poore ho chuke hain. Sign In karein!");
+                    const loginScreen = document.getElementById('loginScreen');
+                    if (loginScreen) loginScreen.style.display = 'flex';
+                    return;
+                }
+                const badgeTextEl = document.getElementById('userBadgeText');
+                if (badgeTextEl) badgeTextEl.innerText = `GUEST (${GUEST_LIMIT - (guestMessageCount+1)} limit left)`;
             }
-            if (input) input.value = '';
-            try { localStorage.removeItem('aero_draft_msg'); } catch(e){}
-            updateCharCounter();
-            playSFX('send');
+
+            let fullPayload = msg;
+            if (attachedFileText) {
+                fullPayload = attachedFileText + "\n\nUSER QUESTION: " + msg;
+            }
+
+            appendMsg('user', msg);
+            saveCurrentChatState(msg);
+            userInput.value = '';
             clearFileAttachment();
-
-            if (saved.isGuest) {
-                guestMessageCount++;
-                try { localStorage.setItem('aero_guest_msgs', guestMessageCount.toString()); } catch(e){}
+            
+            if(typingIndicator) {
+                typingIndicator.style.display = 'block';
+                typingIndicator.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aero Guide is planning educational strategy...';
             }
-
-            document.getElementById('typingIndicator').style.display = 'block';
-            document.getElementById('stopGenBtn').style.display = 'flex';
-            isFetchPending = true;
-            abortController = new AbortController();
+            if(stopGenBtn) stopGenBtn.style.display = 'flex';
+            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
 
             const askUrl = window.location.protocol === 'file:' ? 'https://aeroguide-vedansh.onrender.com/ask' : '/ask';
+            abortController = new AbortController();
+            isFetchPending = true;
 
             try {
                 const res = await fetch(askUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text }),
+                    body: JSON.stringify({ message: fullPayload }),
                     signal: abortController.signal
                 });
+
+                isFetchPending = false;
+
+                if (!res.ok) throw new Error("Server Error!");
+                
                 const data = await res.json();
+                if(typingIndicator) typingIndicator.style.display = 'none';
+                if(stopGenBtn) stopGenBtn.style.display = 'none';
+
                 if (data && data.reply) {
+                    if(savedUser.isGuest) {
+                        guestMessageCount++;
+                        try { localStorage.setItem('aero_guest_msgs', guestMessageCount.toString()); } catch(e){}
+                    }
                     appendMsg('ai', data.reply);
                     saveCurrentChatState();
                     playSFX('receive');
-                }
-            } catch(err) {
-                if (err.name !== 'AbortError') {
-                    appendMsg('ai', 'Connection error ho gaya. Kripya dubara try karein.');
-                }
-            } finally {
-                isFetchPending = false;
-                document.getElementById('typingIndicator').style.display = 'none';
-                document.getElementById('stopGenBtn').style.display = 'none';
-            }
-        }
-
-        /* =====================================================
-           ADVANCED FEATURE PACK (NEW)
-           Study Planner, Progress Dashboard, Bookmarks,
-           Dark/Light + Font-size a11y, PWA install + offline,
-           Keyboard shortcuts, Spaced-repetition flashcards
-           ===================================================== */
-
-        // ---------- PWA: service worker + install prompt + offline banner ----------
-        let deferredInstallPrompt = null;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            const pill = document.getElementById('installPillBtn');
-            const menuBtn = document.getElementById('installAppMenuBtn');
-            if (pill) pill.classList.add('show');
-            if (menuBtn) menuBtn.style.display = 'flex';
-        });
-
-        function triggerInstallPrompt() {
-            if (!deferredInstallPrompt) {
-                showToast('App already installed ya is browser me install available nahi hai.', 'warn');
-                return;
-            }
-            deferredInstallPrompt.prompt();
-            deferredInstallPrompt.userChoice.finally(() => {
-                deferredInstallPrompt = null;
-                const pill = document.getElementById('installPillBtn');
-                const menuBtn = document.getElementById('installAppMenuBtn');
-                if (pill) pill.classList.remove('show');
-                if (menuBtn) menuBtn.style.display = 'none';
-            });
-        }
-
-        window.addEventListener('appinstalled', () => showToast('Aero Guide installed! 🚀', 'success'));
-
-        function updateOfflineBanner() {
-            const banner = document.getElementById('offlineBanner');
-            if (!banner) return;
-            banner.classList.toggle('show', !navigator.onLine);
-        }
-        window.addEventListener('online', updateOfflineBanner);
-        window.addEventListener('offline', updateOfflineBanner);
-
-        // Lightweight inline service worker (works even without a separate file on disk)
-        function registerServiceWorker() {
-            if (!('serviceWorker' in navigator)) return;
-            if (window.location.protocol === 'file:') return; // SW requires http(s)
-            try {
-                const swCode = `
-                    const CACHE = 'aero-guide-shell-v1';
-                    self.addEventListener('install', e => { self.skipWaiting(); });
-                    self.addEventListener('activate', e => { self.clients.claim(); });
-                    self.addEventListener('fetch', e => {
-                        if (e.request.method !== 'GET') return;
-                        e.respondWith(
-                            caches.match(e.request).then(cached => {
-                                const fetchPromise = fetch(e.request).then(res => {
-                                    caches.open(CACHE).then(c => { try { c.put(e.request, res.clone()); } catch(err){} });
-                                    return res;
-                                }).catch(() => cached);
-                                return cached || fetchPromise;
-                            })
-                        );
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl).catch(() => {});
-            } catch(e) {}
-        }
-
-        // ---------- Dark / Light mode ----------
-        function toggleLightDarkMode() {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            try { localStorage.setItem('aero_light_mode', isLight ? '1' : '0'); } catch(e){}
-            const label = document.getElementById('lightDarkLabel');
-            if (label) label.innerText = isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode';
-        }
-
-        function loadLightDarkPref() {
-            try {
-                const isLight = localStorage.getItem('aero_light_mode') === '1';
-                if (isLight) {
-                    document.body.classList.add('light-mode');
-                    const label = document.getElementById('lightDarkLabel');
-                    if (label) label.innerText = 'Switch to Dark Mode';
-                }
-            } catch(e){}
-        }
-
-        // ---------- Font size accessibility ----------
-        const fontSizeSteps = ['font-sm', '', 'font-lg', 'font-xl'];
-        const fontSizeNames = ['Small', 'Normal', 'Large', 'Extra Large'];
-        function cycleFontSize() {
-            let idx = fontSizeSteps.findIndex(c => c && document.body.classList.contains(c));
-            if (idx === -1) idx = document.body.classList.contains('font-sm') ? 0 : 1;
-            fontSizeSteps.forEach(c => { if (c) document.body.classList.remove(c); });
-            idx = (idx + 1) % fontSizeSteps.length;
-            if (fontSizeSteps[idx]) document.body.classList.add(fontSizeSteps[idx]);
-            const label = document.getElementById('fontSizeLabel');
-            if (label) label.innerText = fontSizeNames[idx];
-            try { localStorage.setItem('aero_font_size_idx', idx.toString()); } catch(e){}
-        }
-
-        function loadFontSizePref() {
-            try {
-                const idx = parseInt(localStorage.getItem('aero_font_size_idx') || '1');
-                fontSizeSteps.forEach(c => { if (c) document.body.classList.remove(c); });
-                if (fontSizeSteps[idx]) document.body.classList.add(fontSizeSteps[idx]);
-                const label = document.getElementById('fontSizeLabel');
-                if (label) label.innerText = fontSizeNames[idx] || 'Normal';
-            } catch(e){}
-        }
-
-        // ---------- Keyboard shortcuts (desktop) ----------
-        function openShortcutsModal() {
-            const modal = document.getElementById('shortcutsModal');
-            if (modal) modal.classList.add('active');
-        }
-
-        document.addEventListener('keydown', (e) => {
-            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
-            const typing = tag === 'input' || tag === 'textarea';
-
-            if (e.ctrlKey && e.key.toLowerCase() === 'n') { e.preventDefault(); startNewChatSession(); }
-            else if (e.ctrlKey && e.key.toLowerCase() === 'k') { e.preventDefault(); toggleChatSearch(); }
-            else if (e.ctrlKey && e.key === '/') { e.preventDefault(); openShortcutsModal(); }
-            else if (e.key === '/' && !typing) { e.preventDefault(); const inp = document.getElementById('userInput'); if (inp) inp.focus(); }
-            else if (e.key === 'Escape') {
-                document.querySelectorAll('.app-modal.active').forEach(m => m.classList.remove('active'));
-                const dropdown = document.getElementById('optionsDropdown');
-                if (dropdown) dropdown.classList.remove('show');
-            }
-        });
-
-        // ---------- Study Planner + Exam Countdown ----------
-        let plannerTasks = [];
-        try { plannerTasks = JSON.parse(localStorage.getItem('aero_planner_tasks') || '[]'); } catch(e){ plannerTasks = []; }
-
-        function openPlannerModal() {
-            renderExamCountdown();
-            renderPlannerTasks();
-            const modal = document.getElementById('plannerModal');
-            if (modal) modal.classList.add('active');
-        }
-
-        function saveExamCountdown() {
-            const name = document.getElementById('examNameInput').value.trim();
-            const date = document.getElementById('examDateInput').value;
-            if (!name || !date) { showToast('Exam ka naam aur date dono bharein!', 'warn'); return; }
-            try {
-                localStorage.setItem('aero_exam_name', name);
-                localStorage.setItem('aero_exam_date', date);
-            } catch(e){}
-            renderExamCountdown();
-            showToast('Exam countdown set ho gaya! 🎯', 'success');
-        }
-
-        function renderExamCountdown() {
-            let name = '', date = '';
-            try {
-                name = localStorage.getItem('aero_exam_name') || '';
-                date = localStorage.getItem('aero_exam_date') || '';
-            } catch(e){}
-            const nameValueEl = document.getElementById('examNameValue');
-            const daysEl = document.getElementById('examDaysLeft');
-            if (!name || !date) {
-                if (nameValueEl) nameValueEl.innerText = 'Not set';
-                if (daysEl) daysEl.innerText = '--';
-                return;
-            }
-            if (nameValueEl) nameValueEl.innerText = name;
-            const diffMs = new Date(date + 'T00:00:00') - new Date(new Date().toDateString());
-            const days = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-            if (daysEl) daysEl.innerText = days;
-        }
-
-        function addPlannerTask() {
-            const subject = document.getElementById('taskSubjectInput').value;
-            const title = document.getElementById('taskTitleInput').value.trim();
-            const due = document.getElementById('taskDateInput').value;
-            if (!title) { showToast('Task ka title likhein!', 'warn'); return; }
-            plannerTasks.push({ id: Date.now().toString(), subject, title, due, done: false });
-            savePlannerTasks();
-            document.getElementById('taskTitleInput').value = '';
-            renderPlannerTasks();
-            showToast('Task added to your planner ✅', 'success');
-        }
-
-        function savePlannerTasks() {
-            try { localStorage.setItem('aero_planner_tasks', JSON.stringify(plannerTasks)); } catch(e){}
-        }
-
-        function renderPlannerTasks() {
-            const container = document.getElementById('plannerTaskList');
-            if (!container) return;
-            container.innerHTML = '';
-            if (plannerTasks.length === 0) {
-                container.innerHTML = '<div style="color:var(--text-muted); font-size:0.82rem; padding:8px;">Koi task nahi hai. Upar se ek add karein.</div>';
-                return;
-            }
-            const sorted = [...plannerTasks].sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999'));
-            sorted.forEach(task => {
-                const div = document.createElement('div');
-                div.className = `planner-task ${task.done ? 'done' : ''}`;
-                div.innerHTML = `
-                    <input type="checkbox" ${task.done ? 'checked' : ''} onchange="togglePlannerTask('${task.id}')">
-                    <div class="ptask-info">
-                        <div class="ptask-subject">${task.subject}</div>
-                        <div class="ptask-title">${task.title}</div>
-                        ${task.due ? `<div class="ptask-due">Due: ${task.due}</div>` : ''}
-                    </div>
-                    <i class="fa-solid fa-trash tool-btn" onclick="deletePlannerTask('${task.id}')"></i>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function togglePlannerTask(id) {
-            const task = plannerTasks.find(t => t.id === id);
-            if (task) {
-                task.done = !task.done;
-                if (task.done) task.completedAt = new Date().toDateString();
-                savePlannerTasks();
-                renderPlannerTasks();
-            }
-        }
-
-        function deletePlannerTask(id) {
-            plannerTasks = plannerTasks.filter(t => t.id !== id);
-            savePlannerTasks();
-            renderPlannerTasks();
-        }
-
-        // ---------- Progress Dashboard ----------
-        function logQuizAttempt(correct) {
-            try {
-                let stats = JSON.parse(localStorage.getItem('aero_quiz_stats') || '{"attempts":0,"correct":0}');
-                stats.attempts++;
-                if (correct) stats.correct++;
-                localStorage.setItem('aero_quiz_stats', JSON.stringify(stats));
-            } catch(e){}
-        }
-
-        function logFocusMinutes(mins) {
-            try {
-                const total = parseInt(localStorage.getItem('aero_focus_minutes') || '0') + mins;
-                localStorage.setItem('aero_focus_minutes', total.toString());
-            } catch(e){}
-        }
-
-        function openDashboardModal() {
-            renderDashboard();
-            const modal = document.getElementById('dashboardModal');
-            if (modal) modal.classList.add('active');
-        }
-
-        function renderDashboard() {
-            try {
-                const streak = parseInt(localStorage.getItem('aero_streak_count') || '1');
-                const focusMins = parseInt(localStorage.getItem('aero_focus_minutes') || '0');
-                const stats = JSON.parse(localStorage.getItem('aero_quiz_stats') || '{"attempts":0,"correct":0}');
-                const accuracy = stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
-
-                document.getElementById('dashStreak').innerText = streak;
-                document.getElementById('dashFocusMins').innerText = focusMins;
-                document.getElementById('dashQuizzes').innerText = stats.attempts;
-                document.getElementById('dashAccuracy').innerText = accuracy + '%';
-
-                const subjectCounts = {};
-                plannerTasks.filter(t => t.done).forEach(t => {
-                    subjectCounts[t.subject] = (subjectCounts[t.subject] || 0) + 1;
-                });
-                const maxCount = Math.max(1, ...Object.values(subjectCounts));
-                const chart = document.getElementById('dashBarChart');
-                chart.innerHTML = '';
-                if (Object.keys(subjectCounts).length === 0) {
-                    chart.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">Planner me tasks complete karke apna progress yahan dekhein.</div>';
                 } else {
-                    Object.entries(subjectCounts).forEach(([subject, count]) => {
-                        const row = document.createElement('div');
-                        row.className = 'bar-row';
-                        row.innerHTML = `
-                            <span class="bar-label">${subject}</span>
-                            <div class="bar-track"><div class="bar-fill" style="width:${(count / maxCount) * 100}%"></div></div>
-                            <span>${count}</span>
-                        `;
-                        chart.appendChild(row);
-                    });
+                    appendMsg('ai', '⚠️ Error receiving response from server.');
                 }
+            } catch (err) {
+                isFetchPending = false;
+                if(typingIndicator) typingIndicator.style.display = 'none';
+                if(stopGenBtn) stopGenBtn.style.display = 'none';
+                if (err.name !== 'AbortError') {
+                    appendMsg('ai', '⚠️ **Server Connection Error!** Server down hai ya connection slow hai.');
+                }
+            }
+        }
+
+        function stopAIResponse() {
+            if (abortController && isFetchPending) {
+                abortController.abort();
+            }
+            const typingIndicator = document.getElementById('typingIndicator');
+            const stopGenBtn = document.getElementById('stopGenBtn');
+            if (typingIndicator) typingIndicator.style.display = 'none';
+            if (stopGenBtn) stopGenBtn.style.display = 'none';
+            isFetchPending = false;
+        }
+
+        function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+        function sendQuick(text) { 
+            const userInput = document.getElementById('userInput');
+            if(userInput) { userInput.value = text; sendMessage(); }
+        }
+
+        function copyText(el) {
+            try {
+                const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
+                navigator.clipboard.writeText(text);
+                el.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => el.innerHTML = '<i class="fa-regular fa-copy"></i> Copy', 2000);
             } catch(e){}
         }
 
-        // ---------- Bookmarks ----------
-        let bookmarks = [];
-        try { bookmarks = JSON.parse(localStorage.getItem('aero_bookmarks') || '[]'); } catch(e){ bookmarks = []; }
+        function toggleSpeechSpeed(el) {
+            if (speechSpeed === 1.0) speechSpeed = 1.25;
+            else if (speechSpeed === 1.25) speechSpeed = 1.5;
+            else if (speechSpeed === 1.5) speechSpeed = 0.75;
+            else speechSpeed = 1.0;
+            
+            el.innerText = speechSpeed + 'x';
+        }
 
-        function toggleBookmark(starEl, content) {
-            const isActive = starEl.classList.contains('active');
-            if (isActive) {
-                starEl.classList.remove('active');
-                starEl.innerHTML = '<i class="fa-regular fa-star"></i> Save';
-                bookmarks = bookmarks.filter(b => b.content !== content);
-            } else {
-                starEl.classList.add('active');
-                starEl.innerHTML = '<i class="fa-solid fa-star"></i> Saved';
-                bookmarks.unshift({ id: Date.now().toString(), content, ts: Date.now() });
-                showToast('Answer bookmark ho gaya ⭐', 'success');
+        function speakText(el) {
+            try {
+                const text = el.parentElement.parentElement.querySelector('.bubble').innerText;
+                if(!text) return;
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN';
+                utterance.rate = speechSpeed;
+                window.speechSynthesis.speak(utterance);
+            } catch(e){}
+        }
+
+        async function clearChat() {
+            if(!confirm("Kya aap chat reset karna chahte hain?")) return;
+            const chatBox = document.getElementById('chatBox');
+            if (chatBox) {
+                chatBox.innerHTML = `
+                    <div class="msg-row ai">
+                        <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div class="bubble-container">
+                            <div class="bubble">Chat history reset ho chuka hai! Main <strong>Aero Guide 🚀</strong> (Created by <strong>Vedansh Tiwari</strong>). Aage batao aaj kya strategy banani hai?</div>
+                            <div class="timestamp">Just now</div>
+                        </div>
+                    </div>
+                `;
             }
-            try { localStorage.setItem('aero_bookmarks', JSON.stringify(bookmarks)); } catch(e){}
+            saveCurrentChatState("Reset Chat");
         }
 
-        function openBookmarksModal() {
-            renderBookmarks();
-            const modal = document.getElementById('bookmarksModal');
-            if (modal) modal.classList.add('active');
+        function startVoice() {
+            startLiveVoiceMode();
         }
 
-        function renderBookmarks() {
-            const container = document.getElementById('bookmarksList');
-            if (!container) return;
-            container.innerHTML = '';
-            if (bookmarks.length === 0) {
-                container.innerHTML = '<div style="color:var(--text-muted); font-size:0.82rem; padding:8px;">Koi bookmark nahi hai. Kisi bhi AI answer par ⭐ Save dabayein.</div>';
+        // --- EXPORT: SAVE STRATEGY AS PDF ---
+        function downloadPDF() {
+            const chatBox = document.getElementById('chatBox');
+            if (!chatBox || typeof html2pdf === 'undefined') {
+                alert("PDF export engine load nahi ho paaya. Internet connection check karein.");
                 return;
             }
-            bookmarks.forEach(b => {
-                const div = document.createElement('div');
-                div.className = 'bookmark-item';
-                const preview = (typeof marked !== 'undefined') ? marked.parse(b.content.substring(0, 400)) : b.content.substring(0, 400);
-                div.innerHTML = `<div>${preview}</div>
-                    <div style="margin-top:6px; display:flex; gap:10px;">
-                        <span class="tool-btn" onclick="navigator.clipboard.writeText(\`${b.content.replace(/`/g, "'")}\`); showToast('Copied!','success')"><i class="fa-regular fa-copy"></i> Copy</span>
-                        <span class="tool-btn" onclick="deleteBookmark('${b.id}')"><i class="fa-solid fa-trash"></i> Remove</span>
-                    </div>`;
-                container.appendChild(div);
-            });
+            const opt = {
+                margin: 10,
+                filename: 'AeroGuide-Strategy.pdf',
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 2, backgroundColor: '#0b0f19' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(chatBox).save();
         }
 
-        function deleteBookmark(id) {
-            bookmarks = bookmarks.filter(b => b.id !== id);
-            try { localStorage.setItem('aero_bookmarks', JSON.stringify(bookmarks)); } catch(e){}
-            renderBookmarks();
-        }
-
-        // ---------- Spaced-repetition ratings for flashcards ----------
-        function ensureFcSrsFields() {
-            flashcardData.forEach(c => {
-                if (c.interval === undefined) c.interval = 1;
-                if (c.due === undefined) c.due = new Date().toDateString();
-            });
-        }
-
-        function rateFlashcard(rating) {
-            ensureFcSrsFields();
-            const card = flashcardData[currentFcIdx];
-            if (!card) return;
-            if (rating === 'forgot') {
-                card.interval = 1;
-            } else {
-                card.interval = Math.min(30, (card.interval || 1) * 2);
+        // --- EXPORT: SAVE CHAT AS PNG IMAGE ---
+        function exportChatAsImage() {
+            const chatBox = document.getElementById('chatBox');
+            if (!chatBox || typeof html2canvas === 'undefined') {
+                alert("Image export engine load nahi ho paaya. Internet connection check karein.");
+                return;
             }
-            const next = new Date();
-            next.setDate(next.getDate() + card.interval);
-            card.due = next.toDateString();
-            try { localStorage.setItem('aero_custom_fc', JSON.stringify(flashcardData)); } catch(e){}
-            updateDueBadge();
-            nextFlashcard();
+            html2canvas(chatBox, { backgroundColor: '#0b0f19', scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'AeroGuide-Notes.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         }
 
-        function updateDueBadge() {
-            ensureFcSrsFields();
-            const todayStr = new Date().toDateString();
-            const dueCount = flashcardData.filter(c => new Date(c.due) <= new Date(todayStr)).length;
-            const badge = document.getElementById('fcDueBadge');
-            if (badge) badge.innerText = `${dueCount} card(s) due for spaced revision today`;
-        }
+        // --- POMODORO TIMER LOGIC ---
+        let pomoInterval;
+        let pomoSeconds = 1500;
+        let pomoRunning = false;
 
-        // ---------- Bootstrapping the advanced feature pack ----------
-        document.addEventListener('DOMContentLoaded', () => {
-            loadLightDarkPref();
-            loadFontSizePref();
-            renderExamCountdown();
-            updateDueBadge();
-            updateOfflineBanner();
-            registerServiceWorker();
-        });
+        function togglePomodoroBar() { 
+            const bar = document.getElementById('pomodoroBar');
+            if (bar) bar.classList.toggle('active'); 
+        }
+        function togglePomoTimer() {
+            const icon = document.getElementById('pomoIcon');
+            const display = document.getElementById('pomoDisplay');
+            if (pomoRunning) {
+                clearInterval(pomoInterval);
+                pomoRunning = false;
+                if(icon) icon.className = "fa-solid fa-play";
+            } else {
+                pomoRunning = true;
+                if(icon) icon.className = "fa-solid fa-pause";
+                pomoInterval = setInterval(() => {
+                    pomoSeconds--;
+                    let m = Math.floor(pomoSeconds / 60);
+                    let s = pomoSeconds % 60;
+                    if(display) display.innerText = `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+                    if (pomoSeconds <= 0) {
+                        clearInterval(pomoInterval);
+                        alert("Pomodoro Complete! Take a 5-min break.");
+                        resetPomoTimer();
+                    }
+                }, 1000);
+            }
+        }
+        function resetPomoTimer() {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            pomoSeconds = 1500;
+            const display = document.getElementById('pomoDisplay');
+            const icon = document.getElementById('pomoIcon');
+            if(display) display.innerText = "25:00";
+            if(icon) icon.className = "fa-solid fa-play";
+        }
     </script>
 </body>
 </html>

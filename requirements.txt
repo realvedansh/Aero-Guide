@@ -1,8 +1,0 @@
-flask
-python-dotenv
-groq
-openai
-requests
-gunicorn
-duckduckgo_search
-ddgs

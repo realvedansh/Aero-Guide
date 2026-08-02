@@ -16,6 +16,9 @@ Run in production (recommended — see README.md for full details):
     gunicorn -k gevent -w 4 --threads 8 -b 0.0.0.0:8000 "main:create_app()"
 """
 
+from gevent import monkey
+monkey.patch_all()
+
 import logging
 import uuid
 

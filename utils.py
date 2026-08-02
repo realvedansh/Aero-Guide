@@ -100,7 +100,7 @@ def get_live_weather(location_query: str, weather_api_key: str, timeout: float =
 def search_web_deep(query: str, max_results: int = 4, timeout: float = 6.0) -> str:
     """Best-effort DuckDuckGo search. Returns '' on any failure — never raises."""
     try:
-        from duckduckgo_search import DDGS
+        from ddgs import DDGS
 
         with DDGS(timeout=timeout) as ddgs:
             results = [r.get("body", "") for r in ddgs.text(query, max_results=max_results)]
